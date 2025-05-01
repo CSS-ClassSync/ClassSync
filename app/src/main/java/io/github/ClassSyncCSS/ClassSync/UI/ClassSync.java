@@ -1,4 +1,4 @@
-package io.github.ClassSyncCSS.ClassSync;
+package io.github.ClassSyncCSS.ClassSync.UI;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

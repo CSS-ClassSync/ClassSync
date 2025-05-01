@@ -19,5 +19,5 @@ dependencies {
 java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
 
 application {
-    mainClass = "io.github.ClassSyncCSS.ClassSync.ClassSync"
+    mainClass = "io.github.ClassSyncCSS.ClassSync.UI.ClassSync"
 }
