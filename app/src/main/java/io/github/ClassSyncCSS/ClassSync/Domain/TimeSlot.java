@@ -3,8 +3,8 @@ package io.github.ClassSyncCSS.ClassSync.Domain;
 import java.util.Objects;
 
 public class TimeSlot {
-    private int start;
-    private int end;
+    private final int start;
+    private final int end;
 
     private TimeSlot(int start, int end) {
         this.start = start;
