@@ -1,8 +1,10 @@
 package io.github.ClassSyncCSS.ClassSync.Domain;
 
+import java.util.Objects;
+
 public class TimeSlot {
-    public int start;
-    public int end;
+    private final int start;
+    private final int end;
 
     private TimeSlot(int start, int end) {
         this.start = start;
@@ -15,6 +17,19 @@ public class TimeSlot {
     static public TimeSlot FourteenToSixteen = new TimeSlot(14,16);
     static public TimeSlot SixteenToEighteen = new TimeSlot(16,18);
     static public TimeSlot EighteenToTwenty = new TimeSlot(18,20);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TimeSlot timeSlot = (TimeSlot) o;
+        return start == timeSlot.start && end == timeSlot.end;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, end);
+    }
 }
 
 

@@ -6,4 +6,4 @@ public enum Weekday {
     Wednesday,
     Thursday,
     Friday
-} // NOTE(AAL): no classes on the weekend
+}
