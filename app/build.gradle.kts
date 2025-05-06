@@ -13,7 +13,7 @@ javafx {
 }
 
 dependencies {
-
+    implementation("io.github.spair:imgui-java-app:1.89.0")
 }
 
 java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }

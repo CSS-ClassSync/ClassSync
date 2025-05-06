@@ -1,27 +1,25 @@
 package io.github.ClassSyncCSS.ClassSync.UI;
 
+import io.github.ClassSyncCSS.ClassSync.UI.Controls.SearchableDropdown;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 
 public class ClassSync extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        MenuBar menuBar = new MenuBar();
+        MenuBar fileMenuBar = new MenuBar();
 
         // Create a File Menu
         Menu fileMenu = new Menu("_File"); // Underscore for mnemonic
@@ -50,7 +48,7 @@ public class ClassSync extends Application {
         fileMenu.getItems().addAll(newItem, openItem, saveItem, saveAsItem, new SeparatorMenuItem(), exitItem);
 
         // Add the File Menu to the MenuBar
-        menuBar.getMenus().add(fileMenu);
+        fileMenuBar.getMenus().add(fileMenu);
 
         // Add event handlers to the MenuItems
         newItem.setOnAction(e -> System.out.println("New clicked"));
@@ -62,13 +60,47 @@ public class ClassSync extends Application {
             Platform.exit(); // Exit the application
         });
 
+        ObservableList<String> professors_start = FXCollections.observableArrayList(
+                "Option A",
+                "Option B",
+                "Option C",
+                "Another Option",
+                "Yet Another Option",
+                "Different Option"
+        );
+        SearchableDropdown<String> teachers = new SearchableDropdown<String>();
+        teachers.setItems(professors_start);
+
+        ObservableList<String> group_start = FXCollections.observableArrayList(
+                "Option A",
+                "Option B",
+                "Option C",
+                "Another Option",
+                "Yet Another Option",
+                "Different Option"
+        );
+        SearchableDropdown<String> groups = new SearchableDropdown<String>();
+        groups.setItems(group_start);
+
+        HBox top_filter = new HBox();
+        top_filter.getChildren().add(teachers);
+        top_filter.getChildren().add(groups);
+
+
+
         // Create a label
-        Label label = new Label("Hello, JavaFX!");
+        Label label = new Label("Orar AICI");
 
         // Create a layout pane to hold the label
         BorderPane root = new BorderPane();
-        root.setTop(menuBar);
-        root.getChildren().add(label);
+        root.setTop(fileMenuBar);
+
+        BorderPane content = new BorderPane();
+        content.setTop(top_filter);
+        content.setCenter(label);
+
+        root.setCenter(content);
+
 
 
         // Create a scene
