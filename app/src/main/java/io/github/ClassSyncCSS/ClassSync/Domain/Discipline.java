@@ -8,6 +8,10 @@ public class Discipline {
     private List<Professor> courseProfs;
     private List<Professor> laboratoryProfs;
 
+    public Discipline() {
+        this.name = "----";
+    }
+
     public Discipline(String name, List<Professor> courseProfs, List<Professor> laboratoryProfs) {
         this.name = name;
         this.courseProfs = courseProfs;

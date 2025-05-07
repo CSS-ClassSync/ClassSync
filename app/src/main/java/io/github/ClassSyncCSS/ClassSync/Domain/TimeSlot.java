@@ -3,6 +3,14 @@ package io.github.ClassSyncCSS.ClassSync.Domain;
 import java.util.Objects;
 
 public class TimeSlot {
+    public int getStart() {
+        return start;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+
     private final int start;
     private final int end;
 

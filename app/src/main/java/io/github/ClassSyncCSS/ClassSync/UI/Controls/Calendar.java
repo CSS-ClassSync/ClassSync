@@ -7,10 +7,7 @@ import imgui.flag.ImGuiSelectableFlags;
 import imgui.flag.ImGuiTableFlags;
 import io.github.ClassSyncCSS.ClassSync.Domain.TimeSlot;
 
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class Calendar {
@@ -48,7 +45,7 @@ public class Calendar {
                 ImGui.tableNextRow(height);
 
                 ImGui.tableSetColumnIndex(0);
-                ImGui.text(String.format("%02d:00 - %02d:00", timeIntervals[row].start, timeIntervals[row].end));
+                ImGui.text(String.format("%02d:00 - %02d:00", timeIntervals[row].getStart(), timeIntervals[row].getEnd()));
 
                 for (int column = 0; column < workingDays.length; column++) {
                     ImGui.tableSetColumnIndex(column + 1); // Move to the correct column (offset by 1)
@@ -66,7 +63,7 @@ public class Calendar {
                         String payloadData = row + "," + column;
                         ImGui.setDragDropPayload(PAYLOAD_TYPE_SCHEDULE_CELL, payloadData);
 
-                        ImGui.text("Dragging: " + cellContent);
+                        ImGui.text("Dragging...");
                         ImGui.endDragDropSource();
                     }
 
@@ -82,7 +79,7 @@ public class Calendar {
                             scheduleData[row][column] = scheduleData[sourceRow][sourceCol];
                             scheduleData[sourceRow][sourceCol] = dest_table_val;
 
-                            System.out.println("Dropped content from [" + source[0] + "," + source[1] + "] to [" + row + "," + column + "]");
+//                            System.out.println("Dropped content from [" + source[0] + "," + source[1] + "] to [" + row + "," + column + "]");
                         }
                         ImGui.endDragDropTarget(); // End the drag target
                     }
