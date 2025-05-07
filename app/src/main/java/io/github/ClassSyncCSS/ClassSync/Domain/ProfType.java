@@ -1,6 +1,7 @@
 package io.github.ClassSyncCSS.ClassSync.Domain;
 
-public enum RoomType {
+public enum ProfType {
     Course,
-    Lab,
+    Laboratory,
+    All
 }

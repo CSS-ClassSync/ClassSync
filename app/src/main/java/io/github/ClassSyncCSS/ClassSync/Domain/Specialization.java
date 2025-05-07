@@ -2,15 +2,16 @@ package io.github.ClassSyncCSS.ClassSync.Domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class Group {
+public class Specialization {
     private String name;
-    private Year year;
+    private List<Group> groups;
     private List<Discipline> disciplines;
 
-    public Group(String name, Year year, List<Discipline> disciplines) {
+    public Specialization(String name, List<Group> groups, List<Discipline> disciplines) {
         this.name = name;
-        this.year = year;
+        this.groups = groups;
         this.disciplines = disciplines;
     }
 
@@ -22,16 +23,18 @@ public class Group {
         this.name = name;
     }
 
-    public Year getYear() {
-        return year;
+    public List<Group> getGroups() {
+        return groups != null ? groups : new
+
+    ArrayList<Group>();
     }
 
-    public void setYear(Year year) {
-        this.year = year;
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 
     public List<Discipline> getDisciplines() {
-        return disciplines != null ? disciplines : new ArrayList<>();
+        return disciplines != null ? disciplines : new ArrayList<Discipline>();
     }
 
     public void setDisciplines(List<Discipline> disciplines) {
@@ -40,9 +43,10 @@ public class Group {
 
     @Override
     public String toString() {
-        return "Group{" +
+        return "Specialization{" +
                 "name='" + name + '\'' +
-                ", year=" + year.getYear() +
+                ", groups=" + groups +
+                ", disciplines=" + disciplines +
                 '}';
     }
 }
