@@ -1,13 +1,15 @@
 package io.github.ClassSyncCSS.ClassSync.Domain;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Professor {
     private String name;
     private ProfType type;
-    private Map<Discipline, Map<RoomType,Integer>> disciplines;
+    private Map<Discipline, List<ActivityType>> disciplines;
 
-    public Professor(String name, ProfType type, Map<Discipline, Map<RoomType, Integer>> disciplines) {
+    public Professor(String name, ProfType type, Map<Discipline, List<ActivityType>> disciplines) {
         this.name = name;
         this.type = type;
         this.disciplines = disciplines;
@@ -29,12 +31,11 @@ public class Professor {
         this.type = type;
     }
 
-    public Map<Discipline, Map<RoomType, Integer>> getDisciplines() {
-        return disciplines;
+    public Map<Discipline, List<ActivityType>> getDisciplines() {
+        return disciplines != null ? disciplines : new HashMap<>();
     }
 
-    public void setDisciplines(Map<Discipline, Map<RoomType, Integer>> disciplines) {
+    public void setDisciplines(Map<Discipline, List<ActivityType>> disciplines) {
         this.disciplines = disciplines;
     }
-
 }

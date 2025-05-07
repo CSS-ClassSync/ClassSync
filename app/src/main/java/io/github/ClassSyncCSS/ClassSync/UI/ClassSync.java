@@ -1,5 +1,6 @@
 package io.github.ClassSyncCSS.ClassSync.UI;
 
+import io.github.ClassSyncCSS.ClassSync.Domain.AllData;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -23,6 +24,10 @@ public class ClassSync extends Application {
         // Set the scene on the primary stage
         primaryStage.setTitle("My First JavaFX App");
         primaryStage.setScene(scene);
+
+        AllData all = AllData.load();
+
+        System.out.println(all);
 
         // Show the stage
         primaryStage.show();

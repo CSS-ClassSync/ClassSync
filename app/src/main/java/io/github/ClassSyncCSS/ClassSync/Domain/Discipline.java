@@ -1,5 +1,6 @@
 package io.github.ClassSyncCSS.ClassSync.Domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Discipline {
@@ -22,7 +23,7 @@ public class Discipline {
     }
 
     public List<Professor> getCourseProfs() {
-        return courseProfs;
+        return courseProfs != null ? courseProfs : new ArrayList<>();
     }
 
     public void setCourseProfs(List<Professor> courseProfs) {
@@ -30,10 +31,19 @@ public class Discipline {
     }
 
     public List<Professor> getLaboratoryProfs() {
-        return laboratoryProfs;
+        return laboratoryProfs != null ? laboratoryProfs : new ArrayList<>();
     }
 
     public void setLaboratoryProfs(List<Professor> laboratoryProfs) {
         this.laboratoryProfs = laboratoryProfs;
+    }
+
+    @Override
+    public String toString() {
+        return "Discipline{" +
+                "name='" + name + '\'' +
+//                ", courseProfs=" + courseProfs +
+//                ", laboratoryProfs=" + laboratoryProfs +
+                '}';
     }
 }

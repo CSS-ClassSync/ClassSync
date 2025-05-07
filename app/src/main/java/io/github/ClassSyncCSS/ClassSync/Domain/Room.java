@@ -1,10 +1,13 @@
 package io.github.ClassSyncCSS.ClassSync.Domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Room {
     private String name;
-    private RoomType type;
+    private List<ActivityType> type;
 
-    public Room(String name, RoomType type) {
+    public Room(String name, List<ActivityType> type) {
         this.name = name;
         this.type = type;
     }
@@ -17,11 +20,19 @@ public class Room {
         this.name = name;
     }
 
-    public RoomType getType() {
-        return type;
+    public List<ActivityType> getType() {
+        return type != null ? type : new ArrayList<>();
     }
 
-    public void setType(RoomType type) {
+    public void setType(List<ActivityType> type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                '}';
     }
 }

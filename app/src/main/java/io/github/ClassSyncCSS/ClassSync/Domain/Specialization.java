@@ -1,6 +1,8 @@
 package io.github.ClassSyncCSS.ClassSync.Domain;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Specialization {
     private String name;
@@ -22,7 +24,9 @@ public class Specialization {
     }
 
     public List<Group> getGroups() {
-        return groups;
+        return groups != null ? groups : new
+
+    ArrayList<Group>();
     }
 
     public void setGroups(List<Group> groups) {
@@ -30,10 +34,19 @@ public class Specialization {
     }
 
     public List<Discipline> getDisciplines() {
-        return disciplines;
+        return disciplines != null ? disciplines : new ArrayList<Discipline>();
     }
 
     public void setDisciplines(List<Discipline> disciplines) {
         this.disciplines = disciplines;
+    }
+
+    @Override
+    public String toString() {
+        return "Specialization{" +
+                "name='" + name + '\'' +
+                ", groups=" + groups +
+                ", disciplines=" + disciplines +
+                '}';
     }
 }

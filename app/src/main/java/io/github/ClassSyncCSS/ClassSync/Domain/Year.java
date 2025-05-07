@@ -1,29 +1,38 @@
 package io.github.ClassSyncCSS.ClassSync.Domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Year {
-    private int year;
+    private String year;
     private List<Specialization> specializations;
 
-    public Year(int year, List<Specialization> specializations) {
+    public Year(String year, List<Specialization> specializations) {
         this.year = year;
         this.specializations = specializations;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
     public List<Specialization> getSpecializations() {
-        return specializations;
+        return specializations != null ? specializations : new ArrayList<Specialization>();
     }
 
     public void setSpecializations(List<Specialization> specializations) {
         this.specializations = specializations;
+    }
+
+    @Override
+    public String toString() {
+        return "Year{" +
+                "year='" + year + '\'' +
+                ", specializations=" + specializations +
+                '}';
     }
 }
