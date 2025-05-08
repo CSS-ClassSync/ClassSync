@@ -34,11 +34,11 @@ public class SidePane {
 
         float width = ImGui.getWindowWidth();
 
-        var iterator = slots.iterator();
-        while (iterator.hasNext()) {
-            TimeTableSlot slot = iterator.next();
+        for(int i = 0; i < slots.size(); i++) {
+            TimeTableSlot slot = slots.get(i);
 
-            ImGui.selectable("##class_selectable", false, ImGuiSelectableFlags.AllowItemOverlap, new ImVec2(width, 100));
+            String selectableId = String.format("##class_selectable_%d", i);
+            ImGui.selectable(selectableId, false, ImGuiSelectableFlags.AllowItemOverlap, new ImVec2(width, 100));
 
             if (slot != null &&  ImGui.beginDragDropSource()) {
                 ImGui.setDragDropPayload(Calendar.PAYLOAD_TYPE_SCHEDULE_CELL, slot);
@@ -53,6 +53,7 @@ public class SidePane {
                 ImGui.text("empty");
             } else {
                 ImGui.text(String.format("%s - %s", slot.getDiscipline().getName(), slot.getActivityType().name()));
+                ImGui.text(String.format("Group: %s", slot.getGroup().getName()));
             }
             ImGui.endGroup();
 

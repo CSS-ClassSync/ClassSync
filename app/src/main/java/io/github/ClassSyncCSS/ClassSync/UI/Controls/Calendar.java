@@ -7,9 +7,7 @@ import imgui.flag.ImGuiSelectableFlags;
 import imgui.flag.ImGuiTableFlags;
 import io.github.ClassSyncCSS.ClassSync.Domain.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Calendar {
     TimeSlot[] timeIntervals = {
@@ -54,7 +52,7 @@ public class Calendar {
     public void process() {
         ImGui.begin("Calendar");
 
-        if(filtersRef.areFiltersValid()) {
+        if (filtersRef.areFiltersValid()) {
             displayTable();
         } else {
             ImGui.textColored(0xfffc5f53, "The filters you have selected are too broad, please narrow your search.");
@@ -72,23 +70,70 @@ public class Calendar {
         // --- Side pane
         List<TimeTableSlot> classesRemaining = new ArrayList<>();
 
-        if(selectedGroup != null) {
+        if (selectedGroup != null) {
             classesRemaining.addAll(fullTimeTable.getClassesRemainingByGroup().get(selectedGroup));
         }
-        if(selectedProf != null) {
+        if (selectedProf != null) {
 
-            if(classesRemaining.isEmpty()) {
+            if (classesRemaining.isEmpty()) {
                 // We're doing just this
                 classesRemaining.addAll(fullTimeTable.getClassesRemainingByProfessor().get(selectedProf));
             } else {
                 // We're multi-filtering
+                classesRemaining.retainAll(fullTimeTable.getClassesRemainingByProfessor().get(selectedProf));
+            }
+        }
+        if (selectedDiscipline != null) {
+            if (classesRemaining.isEmpty()) {
+                // We're doing just this
+                classesRemaining.addAll(fullTimeTable.getClassesRemainingByDisipline().get(selectedDiscipline));
+            } else {
+                // We're multi-filtering
+                classesRemaining.retainAll(fullTimeTable.getClassesRemainingByDisipline().get(selectedDiscipline));
             }
         }
 
         this.sidePaneRef.slots = classesRemaining;
 
-        // --- Actual Calendar
+        // --- Actual Calendar, scheduleData
+        Map<Weekday, List<TimeTableSlot>> schedule = null;
 
+        if (selectedGroup != null) {
+            schedule = fullTimeTable.getScheduleByGroup(selectedGroup);
+        } else if (selectedProf != null) {
+            schedule = fullTimeTable.getScheduleByProfessor(selectedProf);
+        } else if (selectedDiscipline != null) {
+            schedule = fullTimeTable.getScheduleByDiscipline(selectedDiscipline);
+        } else if (selectedRoom != null) {
+            schedule = fullTimeTable.getScheduleByRoom(selectedRoom);
+        }
+
+        if (schedule != null) {
+            for (int i = 0; i < timeIntervals.length; i++) {
+                for (int j = 0; j < Weekday.values().length; j++) {
+                    scheduleData[i][j] = null;
+                }
+            }
+
+            for (Map.Entry<Weekday, List<TimeTableSlot>> entry : schedule.entrySet()) {
+                Weekday weekday = entry.getKey();
+                List<TimeTableSlot> slots = entry.getValue();
+
+                for (TimeTableSlot slot : slots) {
+                    int row = Arrays.stream(timeIntervals).toList().indexOf(slot.getSlot());
+                    int column = weekday.ordinal();
+                    scheduleData[row][column] = slot;
+                }
+            }
+        }
+        // If no filters are selected, reset the scheduleData
+        else {
+            for (int i = 0; i < timeIntervals.length; i++) {
+                for (int j = 0; j < Weekday.values().length; j++) {
+                    scheduleData[i][j] = null;
+                }
+            }
+        }
 
     }
 
@@ -117,10 +162,10 @@ public class Calendar {
 
 
                     ImGui.selectable(selectableId, false, ImGuiSelectableFlags.AllowItemOverlap,
-                                    new ImVec2(ImGui.getColumnWidth(column + 1), height - 2));
+                            new ImVec2(ImGui.getColumnWidth(column + 1), height - 2));
 
 
-                    if (cellContent != null &&  ImGui.beginDragDropSource()) {
+                    if (cellContent != null && ImGui.beginDragDropSource()) {
                         ImGui.setDragDropPayload(PAYLOAD_TYPE_SCHEDULE_CELL, cellContent);
 
                         ImGui.text("Dragging...");
@@ -128,61 +173,100 @@ public class Calendar {
                     }
 
                     if (ImGui.beginDragDropTarget()) {
-                        TimeTableSlot receivedPayload = ImGui.acceptDragDropPayload(PAYLOAD_TYPE_SCHEDULE_CELL, ImGuiDragDropFlags.None);
+                        TimeTableSlot previewPayload = ImGui.getDragDropPayload(PAYLOAD_TYPE_SCHEDULE_CELL);
+                        
+                        if (previewPayload != null) {
+                            // Create validation copy with target position
+                            TimeTableSlot validationCopy = new TimeTableSlot(
+                                Weekday.values()[column], 
+                                timeIntervals[row],
+                                previewPayload.getProfessor(),
+                                previewPayload.getRoom(),
+                                previewPayload.getGroup(),
+                                previewPayload.getDiscipline(),
+                                previewPayload.getActivityType()
+                            );
+                            
+                            boolean canAccept = fullTimeTable.checkAdd(validationCopy);
+                            
+                            if (canAccept) {
+                                TimeTableSlot receivedPayload = ImGui.acceptDragDropPayload(PAYLOAD_TYPE_SCHEDULE_CELL);
+                                
+                                if (receivedPayload != null) {
+                                    var sourceWeekday = receivedPayload.getWeekday();
+                                    var sourceTimeSlot = receivedPayload.getSlot();
 
-                        if (receivedPayload != null) {
-                            var sourceWeekday = receivedPayload.getWeekday();
-                            var sourceTimeSlot = receivedPayload.getSlot();
+                                    if (sourceWeekday != null && sourceTimeSlot != null) {
+                                        // Coming from another cell in the Calendar
+                                        int sourceRow = Arrays.stream(timeIntervals).toList().indexOf(sourceTimeSlot);
+                                        int sourceCol = sourceWeekday.ordinal();
 
-                            if(sourceWeekday != null && sourceTimeSlot != null) {
-                                // We have to swap
-                                int sourceRow = Arrays.stream(timeIntervals).toList().indexOf(sourceTimeSlot);
-                                int sourceCol = sourceWeekday.ordinal();
+                                        int targetRow = row;
+                                        int targetCol = column;
 
-                                int targetRow = row;
-                                int targetCol = column;
-                                Weekday targetWeekday = Weekday.values()[targetCol];
-                                TimeSlot targetTimeSlot = timeIntervals[targetRow];
+                                        // First, remove the slot from its current position in the TimeTable
+                                        if (scheduleData[sourceRow][sourceCol] != null) {
+                                            fullTimeTable.removeDiscipline(scheduleData[sourceRow][sourceCol]);
+                                        }
 
-                                // Swap the content
-                                TimeTableSlot temp = scheduleData[targetRow][targetCol];
-                                scheduleData[targetRow][targetCol] = scheduleData[sourceRow][sourceCol];
-                                scheduleData[sourceRow][sourceCol] = temp;
-                                // Update the source cell
-                                if(scheduleData[sourceRow][sourceCol] != null) {
-                                    scheduleData[sourceRow][sourceCol].setWeekday(sourceWeekday);
-                                    scheduleData[sourceRow][sourceCol].setSlot(sourceTimeSlot);
+                                        // Then update visual representation
+                                        TimeTableSlot temp = scheduleData[targetRow][targetCol];
+                                        scheduleData[targetRow][targetCol] = scheduleData[sourceRow][sourceCol];
+                                        scheduleData[sourceRow][sourceCol] = temp;
+                                        
+                                        // Update the slots with their new positions
+                                        if (scheduleData[sourceRow][sourceCol] != null) {
+                                            scheduleData[sourceRow][sourceCol].setWeekday(sourceWeekday);
+                                            scheduleData[sourceRow][sourceCol].setSlot(sourceTimeSlot);
+                                            
+                                            // Re-add the moved slot to TimeTable at its new position
+                                            fullTimeTable.addDiscipline(scheduleData[sourceRow][sourceCol]);
+                                        }
+
+                                        if (scheduleData[targetRow][targetCol] != null) {
+                                            scheduleData[targetRow][targetCol].setWeekday(Weekday.values()[column]);
+                                            scheduleData[targetRow][targetCol].setSlot(timeIntervals[row]);
+                                            
+                                            // Add the target cell content to TimeTable
+                                            fullTimeTable.addDiscipline(scheduleData[targetRow][targetCol]);
+                                        }
+                                    } else {
+                                        // Coming from SidePane
+                                        this.sidePaneRef.slots.remove(receivedPayload);
+                                        
+                                        // First, remove any existing slot at this position
+                                        if (scheduleData[row][column] != null) {
+                                            fullTimeTable.removeDiscipline(scheduleData[row][column]);
+                                        }
+                                        
+                                        // Then update with the new slot
+                                        receivedPayload.setWeekday(Weekday.values()[column]);
+                                        receivedPayload.setSlot(timeIntervals[row]);
+
+                                        scheduleData[row][column] = receivedPayload;
+//                                        scheduleData[row][column].setWeekday(Weekday.values()[column]);
+//                                        scheduleData[row][column].setSlot(timeIntervals[row]);
+//
+                                        // Add it to the fullTimeTable
+                                        fullTimeTable.addDiscipline(receivedPayload);
+                                    }
                                 }
-
-                                // Update the target cell
-                                if(scheduleData[targetRow][targetCol] != null) {
-                                    scheduleData[targetRow][targetCol].setWeekday(targetWeekday);
-                                    scheduleData[targetRow][targetCol].setSlot(targetTimeSlot);
-                                }
-
-                            } else {
-                                // We just add it, we come from SidePane
-                                this.sidePaneRef.slots.remove(receivedPayload);
-                                scheduleData[row][column] = receivedPayload;
-                                scheduleData[row][column].setWeekday(Weekday.values()[column]);
-                                scheduleData[row][column].setSlot(timeIntervals[row]);
                             }
-
-//                            System.out.println("Dropped content from [" + source[0] + "," + source[1] + "] to [" + row + "," + column + "]");
                         }
-                        ImGui.endDragDropTarget(); // End the drag target
+        
+                        ImGui.endDragDropTarget();
                     }
 
                     ImGui.sameLine(5, 0);
                     ImGui.setCursorPosX(ImGui.getCursorPosX() + ImGui.getStyle().getFramePaddingX());
 
                     ImGui.beginGroup();
-                        if(cellContent == null) {
-                            ImGui.text("empty");
-                        } else {
-                            ImGui.text(String.format("%s - %s", cellContent.getDiscipline().getName(), cellContent.getActivityType().name()));
-//                            ImGui.beginCombo("##tt_prof", );
-                        }
+                    if (cellContent == null) {
+                        ImGui.text("empty");
+                    } else {
+                        ImGui.text(String.format("%s - %s", cellContent.getDiscipline().getName(), cellContent.getActivityType().name()));
+                        ImGui.text(String.format("Group: %s", cellContent.getGroup().getName()));
+                    }
                     ImGui.endGroup();
                 }
             }

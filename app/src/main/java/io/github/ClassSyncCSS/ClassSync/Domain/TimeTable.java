@@ -97,39 +97,64 @@ public class TimeTable {
     public boolean addDiscipline(TimeTableSlot slot) {
         TimeSlot hours = slot.getSlot();
         Weekday day = slot.getWeekday();
-        String group = slot.getGroup().getYear() + slot.getGroup().getName();
+        String group = slot.getGroup().getName();
+        Professor professor = slot.getProfessor();
+        Room room = slot.getRoom();
+
 
         if (hasConflict(scheduleByGroup, group, day, hours)) return false;
 
-        if (hasConflict(scheduleByProfessor, slot.getProfessor().getName(), day, hours)) return false;
+        if (professor != null && hasConflict(scheduleByProfessor, professor.getName(), day, hours)) return false;
 
-        if (hasConflict(scheduleByRoom, slot.getRoom().getName(), day, hours)) return false;
+        if (room != null && hasConflict(scheduleByRoom, room.getName(), day, hours)) return false;
 
         insertSlot(scheduleByGroup, group, day, hours, slot);
-        insertSlot(scheduleByProfessor, slot.getProfessor().getName(), day, hours, slot);
-        insertSlot(scheduleByRoom, slot.getRoom().getName(), day, hours, slot);
+        if(professor != null) insertSlot(scheduleByProfessor, professor.getName(), day, hours, slot);
+        if(room != null) insertSlot(scheduleByRoom, room.getName(), day, hours, slot);
         insertSlot(scheduleByDiscipline, slot.getDiscipline().getName(), day, hours, slot);
 
-        classesRemainingByGroup.remove(slot.getGroup());
-        classesRemainingByDisipline.remove(slot.getDiscipline());
-        classesRemainingByProfessor.remove(slot.getProfessor());
+        List<TimeTableSlot> groupSlots = classesRemainingByGroup.get(slot.getGroup());
+        if(groupSlots != null) {
+            groupSlots.removeIf(s -> 
+                s.getProfessor() == null || s.getProfessor().equals(slot.getProfessor()) &&
+                s.getDiscipline().equals(slot.getDiscipline()) && 
+                s.getActivityType() == slot.getActivityType());
+        }
+        
+        List<TimeTableSlot> disciplineSlots = classesRemainingByDisipline.get(slot.getDiscipline());
+        if(disciplineSlots != null) {
+            disciplineSlots.removeIf(s -> 
+                s.getGroup().equals(slot.getGroup()) && 
+                s.getActivityType() == slot.getActivityType());
+        }
+
+        List<TimeTableSlot> professorSlots = classesRemainingByProfessor.get(professor);
+        if(professorSlots != null) {
+            professorSlots.removeIf(s -> 
+            s.getDiscipline().equals(slot.getDiscipline()) && 
+            s.getGroup().equals(slot.getGroup()) && 
+            s.getActivityType() == slot.getActivityType());
+        }
 
         return true;
     }
 
     public boolean checkAdd(TimeTableSlot slot) {
-        if (slot == null || slot.getSlot() == null || slot.getWeekday() == null || 
-            slot.getGroup() == null || slot.getProfessor() == null || slot.getRoom() == null) {
-            return false;
-        }
+//        if (slot == null || slot.getSlot() == null || slot.getWeekday() == null ||
+//            slot.getGroup() == null || slot.getProfessor() == null || slot.getRoom() == null) {
+//            return false;
+//        }
         
         TimeSlot hours = slot.getSlot();
         Weekday day = slot.getWeekday();
-        String group = slot.getGroup().getYear() + slot.getGroup().getName();
-    
+        String group = slot.getGroup().getName();
+
+        Professor professor = slot.getProfessor();
+        Room room = slot.getRoom();
+
         if (hasConflict(scheduleByGroup, group, day, hours)) return false;
-        if (hasConflict(scheduleByProfessor, slot.getProfessor().getName(), day, hours)) return false;
-        if (hasConflict(scheduleByRoom, slot.getRoom().getName(), day, hours)) return false;
+        if (professor != null && hasConflict(scheduleByProfessor, professor.getName(), day, hours)) return false;
+        if (room != null && hasConflict(scheduleByRoom, room.getName(), day, hours)) return false;
     
         return true;
     }
@@ -156,7 +181,7 @@ public class TimeTable {
     public boolean removeDiscipline(TimeTableSlot slot) {
         TimeSlot hours = slot.getSlot();
         Weekday day = slot.getWeekday();
-        String group = slot.getGroup().getYear() + slot.getGroup().getName();
+        String group = slot.getGroup().getName();
 
         boolean removed = false;
 
@@ -204,6 +229,71 @@ public class TimeTable {
 
     public Map<Discipline, List<TimeTableSlot>> getClassesRemainingByDisipline() {
         return classesRemainingByDisipline;
+    }
+
+    /**
+     * Get the schedule for a specific group
+     * @param group The group to get the schedule for
+     * @return A map of weekday to list of timeslots for this group
+     */
+    public Map<Weekday, List<TimeTableSlot>> getScheduleByGroup(Group group) {
+        if (group == null) return null;
+        String key = group.getName();
+        return convertScheduleFormat(scheduleByGroup.get(key));
+    }
+
+    /**
+     * Get the schedule for a specific professor
+     * @param professor The professor to get the schedule for
+     * @return A map of weekday to list of timeslots for this professor
+     */
+    public Map<Weekday, List<TimeTableSlot>> getScheduleByProfessor(Professor professor) {
+        if (professor == null) return null;
+        String key = professor.getName();
+        return convertScheduleFormat(scheduleByProfessor.get(key));
+    }
+
+    /**
+     * Get the schedule for a specific room
+     * @param room The room to get the schedule for
+     * @return A map of weekday to list of timeslots for this room
+     */
+    public Map<Weekday, List<TimeTableSlot>> getScheduleByRoom(Room room) {
+        if (room == null) return null;
+        String key = room.getName();
+        return convertScheduleFormat(scheduleByRoom.get(key));
+    }
+
+    /**
+     * Get the schedule for a specific discipline
+     * @param discipline The discipline to get the schedule for
+     * @return A map of weekday to list of timeslots for this discipline
+     */
+    public Map<Weekday, List<TimeTableSlot>> getScheduleByDiscipline(Discipline discipline) {
+        if (discipline == null) return null;
+        String key = discipline.getName();
+        return convertScheduleFormat(scheduleByDiscipline.get(key));
+    }
+
+    /**
+     * Helper method to convert the nested map structure to a simpler format
+     * @param scheduleMap The original nested map from the scheduleBy* fields
+     * @return A map of Weekday to List of TimeTableSlots
+     */
+    private Map<Weekday, List<TimeTableSlot>> convertScheduleFormat(Map<Weekday, Map<TimeSlot, TimeTableSlot>> scheduleMap) {
+        if (scheduleMap == null) return new HashMap<>();
+        
+        Map<Weekday, List<TimeTableSlot>> result = new HashMap<>();
+        
+        for (Map.Entry<Weekday, Map<TimeSlot, TimeTableSlot>> entry : scheduleMap.entrySet()) {
+            Weekday weekday = entry.getKey();
+            Map<TimeSlot, TimeTableSlot> timeSlotMap = entry.getValue();
+            
+            List<TimeTableSlot> slots = new ArrayList<>(timeSlotMap.values());
+            result.put(weekday, slots);
+        }
+        
+        return result;
     }
 }
 
