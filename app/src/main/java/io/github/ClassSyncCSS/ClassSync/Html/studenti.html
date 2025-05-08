@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Studenți</title>
+</head>
+<body>
+  <h2>Grupe studenți</h2>
+  <ul id="listaGrupe"></ul>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    async function loadCSV(url) {
+      const response = await fetch(url);
+      const text = await response.text();
+      return Papa.parse(text, { header: true }).data;
+    }
+    async function main() {
+      const grupe = await loadCSV('data/grupe.csv');
+      const ani = await loadCSV('data/ani.csv');
+      const lista = document.getElementById('listaGrupe');
+      grupe.forEach(gr => {
+      const an = ani.find(a => a.id === gr.an);
+      const li = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = `orar_grupe.html?grupa=${encodeURIComponent(gr.id)}`;
+      link.textContent = `${gr.id} - An ${an.an}, ${an.spec}, ${an.type}`;
+      li.appendChild(link);
+      lista.appendChild(li);
+    });
+
+    }
+    main();
+  </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+id,name,tip
+MAT000,Advanced Programming,Laborator
+MAT001,Advanced Programming,Curs
+MAT002,Algebraic Foundations of Computer Science,Curs
+MAT003,Algebraic Foundations of Computer Science,Seminar
+MAT004,Algorithm Design,Curs
+MAT005,Algorithm Design,Seminar
+MAT006,Analiza experimentala a algoritmilor,Laborator
+MAT007,Analiza experimentala a algoritmilor,Curs
+MAT008,Analiza reţelelor media sociale,Laborator
+MAT009,Analiza reţelelor media sociale,Curs
+MAT010,Antreprenoriat şi inovare în IT,Curs
+MAT011,Antreprenoriat şi inovare în IT,Laborator
+MAT012,Aspecte Computationale in Teoria Numerelor,Laborator
+MAT013,Aspecte Computationale in Teoria Numerelor,Curs
+MAT014,"Aspecte pragmatice pentru ingineria serviciilor cloud: arhitecturi, procese și practici",Curs
+MAT015,"Aspecte pragmatice pentru ingineria serviciilor cloud: arhitecturi, procese și practici",Laborator
+MAT016,Calcul Numeric,Laborator
+MAT017,Calcul Numeric,Curs
+MAT018,Calitatea Sistemelor Software,Curs
+MAT019,Calitatea Sistemelor Software,Laborator
+MAT020,Capitole Avansate in Vedere Artificiala (Computer Vision),Laborator
+MAT021,Capitole Speciale de Invatare Automata,Curs
+MAT022,Capitole Speciale de Invatare Automata,Seminar
+MAT023,Cerc stiintific,Cerc stiintific
+MAT024,Cercetare Formala I,Seminar
+MAT025,Cloud Computing,Laborator
+MAT026,Cloud Computing,Curs
+MAT027,Computer Graphics and Computational Geometry,Curs
+MAT028,Computer Graphics and Computational Geometry,Laborator
+MAT029,Consultatii,Consultatii
+MAT030,DBMS Practice,Laborator
+MAT031,DBMS Practice,Curs
+MAT032,Data Mining,Laborator
+MAT033,Data Mining,Curs
+MAT034,Didactica Specializarii,Curs
+MAT035,Didactica Specializarii,Seminar
+MAT036,Educatie Fizica,Practic
+MAT037,English 2,Seminar
+MAT038,English 4,Seminar
+MAT039,Etica si Integritate Academica,Curs
+MAT040,Fundamentele Algebrice ale Informaticii,Curs
+MAT041,Fundamentele Algebrice ale Informaticii,Seminar
+MAT042,Grafica pe calculator si geometrie computationala,Curs
+MAT043,Grafica pe calculator si geometrie computationala,Laborator
+MAT044,Indrumare lucrări disertație,Facultativ
+MAT045,Indrumare lucrări licență,Facultativ
+MAT046,Ingineria programarii,Laborator
+MAT047,Ingineria programarii,Curs
+MAT048,Inginerie Software Specifica Automobilelor,Curs
+MAT049,Inginerie Software Specifica Automobilelor,Laborator
+MAT050,Interactiune om-calculator,Curs
+MAT051,Interactiune om-calculator,Laborator
+MAT052,Internship,Laborator
+MAT053,Introducere in Criptografie,Laborator
+MAT054,Introducere in Criptografie,Curs
+MAT055,Introducere in Internetul Lucrurilor,Curs
+MAT056,Introducere in Internetul Lucrurilor,Laborator
+MAT057,Limba engleza 2,Seminar
+MAT058,Limba engleza 4,Seminar
+MAT059,Limbaje de scripturi,Laborator
+MAT060,Limbaje de scripturi,Curs
+MAT061,Managementul Clasei de Elevi,Seminar
+MAT062,Managementul Clasei de Elevi,Curs
+MAT063,Modelarea Sistemelor Distribuite,Laborator
+MAT064,Modelarea Sistemelor Distribuite,Curs
+MAT065,Numerical Calculus,Laborator
+MAT066,Numerical Calculus,Curs
+MAT067,Object Oriented Programming,Curs
+MAT068,Object Oriented Programming,Laborator
+MAT069,Operating Systems,Curs
+MAT070,Operating Systems,Laborator
+MAT071,Pedagogie 1,Seminar - Facultativ
+MAT072,Pedagogie 1,Curs - Facultativ
+MAT073,Practica Pedagogica in Invatamantul Preuniversitar Obligatoriu II,Practic - Facultativ
+MAT074,Practica SGBD,Laborator
+MAT075,Practica SGBD,Curs
+MAT076,Practica de Specialitate,Practic
+MAT077,Practica profesionala/cercetare,Laborator
+MAT078,Prelucrarea Statistica a Limbajului Natural,Laborator
+MAT079,Prelucrarea Statistica a Limbajului Natural,Curs
+MAT080,Prelucrarea Vorbirii si Sisteme Fuzzy,Curs
+MAT081,Prelucrarea Vorbirii si Sisteme Fuzzy,Laborator
+MAT082,Probabilitati si statistica,Curs
+MAT083,Probabilitati si statistica,Laborator
+MAT084,Probabilities and Statistics,Curs
+MAT085,Probabilities and Statistics,Laborator
+MAT086,Programare Competitiva,Seminar - Facultativ
+MAT087,Programare Funcțională,Curs
+MAT088,Programare Funcțională,Laborator
+MAT089,Programare avansată,Laborator
+MAT090,Programare avansată,Curs
+MAT091,Programare concurentă şi distribuită,Laborator
+MAT092,Programare concurentă şi distribuită,Curs
+MAT093,Programare orientata-obiect,Laborator
+MAT094,Programare orientata-obiect,Curs
+MAT095,Proiectarea algoritmilor,Curs
+MAT096,Proiectarea algoritmilor,Seminar
+MAT097,Proiectarea jocurilor,Curs
+MAT098,Proiectarea jocurilor,Laborator
+MAT099,Protocoale de securitate. Modelare si verificare.,Curs
+MAT100,Protocoale de securitate. Modelare si verificare.,Laborator
+MAT101,Psihologia Comunicarii Profesionale in Domeniul IT-ului,Curs
+MAT102,Psihologia Comunicarii Profesionale in Domeniul IT-ului,Seminar
+MAT103,Retele Petri si Aplicatii,Laborator
+MAT104,Retele Petri si Aplicatii,Curs
+MAT105,Scoala Doctorala,Alte activitati
+MAT106,Securitate IoT,Curs
+MAT107,Securitate IoT,Laborator
+MAT108,Securitatea Retelelor de Calculatoare,Curs
+MAT109,Securitatea Retelelor de Calculatoare,Laborator
+MAT110,Sisteme Bazate pe Evenimente,Curs
+MAT111,Sisteme Bazate pe Evenimente,Laborator
+MAT112,Sisteme Embedded,Curs
+MAT113,Sisteme Embedded,Laborator
+MAT114,Sisteme bazate pe cunoștințe,Curs
+MAT115,Sisteme bazate pe cunoștințe,Laborator
+MAT116,Sisteme de Dialog si Asistenti Virtuali,Curs
+MAT117,Sisteme de Dialog si Asistenti Virtuali,Laborator
+MAT118,Sisteme de Operare,Curs
+MAT119,Sisteme de Operare,Laborator
+MAT120,Smart Card-uri si Aplicatii,Curs
+MAT121,Smart Card-uri si Aplicatii,Laborator
+MAT122,Software Engineering,Laborator
+MAT123,Software Engineering,Curs
+MAT124,Specificarea şi verificarea sistemelor,Curs
+MAT125,Specificarea şi verificarea sistemelor,Seminar
+MAT126,Tehnici de Programare pe Platforme Mobile,Curs
+MAT127,Tehnici de Programare pe Platforme Mobile,Laborator
+MAT128,Tehnici de procesarea limbajului natural,Curs
+MAT129,Tehnici de procesarea limbajului natural,Laborator
+MAT130,Tehnologii Web,Laborator
+MAT131,Tehnologii Web,Curs
+MAT132,Topici avansate in .NET,Curs
+MAT133,Topici avansate in .NET,Laborator
+MAT134,Tutoriat,Laborator
+MAT135,Web Technologies,Curs
+MAT136,Web Technologies,Laborator

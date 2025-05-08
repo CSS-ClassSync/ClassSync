@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Orar Grupa</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2 id="titluOrar">Orar pentru grupa</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Ora / Zi</th>
+        <th>Luni</th>
+        <th>Marți</th>
+        <th>Miercuri</th>
+        <th>Joi</th>
+        <th>Vineri</th>
+      </tr>
+    </thead>
+    <tbody id="orarBody"></tbody>
+  </table>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const grupa = urlParams.get('grupa');
+    document.getElementById('titluOrar').textContent = `Orar pentru grupa ${grupa}`;
+
+    const orare = {
+      "MIAO1": {
+        "Luni": {
+          "10:00–12:00": { disciplina: "Programare", profesor: "Popescu Ion", sala: "C101" }
+        },
+        "Marti": {
+          "08:00–10:00": { disciplina: "Baze de date", profesor: "Ionescu Maria", sala: "C302" }
+        },
+        "Vineri": {
+          "14:00–16:00": { disciplina: "AI", profesor: "Zălinescu Adrian", sala: "C305" }
+        }
+      }
+    };
+
+    const zile = ["Luni", "Marti", "Miercuri", "Joi", "Vineri"];
+    const intervale = ["08:00–10:00", "10:00–12:00", "12:00–14:00", "14:00–16:00"];
+    const orar = orare[grupa] || {};
+    const body = document.getElementById('orarBody');
+
+    intervale.forEach(interval => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td><strong>${interval}</strong></td>`;
+      zile.forEach(zi => {
+        const slot = orar[zi]?.[interval];
+        const td = document.createElement('td');
+        td.innerHTML = slot
+          ? `<strong>${slot.disciplina}</strong><br>${slot.profesor}<br>${slot.sala}`
+          : '';
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  </script>
+</body>
+</html>

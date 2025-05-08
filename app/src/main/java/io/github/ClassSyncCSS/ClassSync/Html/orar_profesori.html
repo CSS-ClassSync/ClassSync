@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Orar Profesor</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2 id="titluOrar">Orar pentru profesor</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Ora / Zi</th>
+        <th>Luni</th>
+        <th>Marți</th>
+        <th>Miercuri</th>
+        <th>Joi</th>
+        <th>Vineri</th>
+      </tr>
+    </thead>
+    <tbody id="orarBody"></tbody>
+  </table>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    async function loadCSV(url) {
+      const response = await fetch(url);
+      const text = await response.text();
+      return Papa.parse(text, { header: true }).data;
+    }
+
+    async function main() {
+      const profesori = await loadCSV('data/profesori.csv');
+      const urlParams = new URLSearchParams(window.location.search);
+      const profesorId = urlParams.get('profesor');
+
+      const profesor = profesori.find(p => p.id === profesorId);
+      const profesorName = profesor ? profesor.name : profesorId; 
+
+      document.getElementById('titluOrar').textContent = `Orar pentru profesor ${profesorName}`;
+
+      const orareProfesori = {
+        "PART001": {
+          "Luni": {
+            "10:00–12:00": { disciplina: "Programare", grupa: "MIAO1", sala: "C101" }
+          }
+        },
+        "PART002": {
+          "Marti": {
+            "08:00–10:00": { disciplina: "Baze de date", grupa: "MIAO1", sala: "C302" }
+          }
+        }
+      };
+
+      const zile = ["Luni", "Marti", "Miercuri", "Joi", "Vineri"];
+      const intervale = ["08:00–10:00", "10:00–12:00", "12:00–14:00", "14:00–16:00"];
+      const orar = orareProfesori[profesorId] || {};
+      const body = document.getElementById('orarBody');
+
+      intervale.forEach(interval => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><strong>${interval}</strong></td>`;
+        zile.forEach(zi => {
+          const slot = orar[zi]?.[interval];
+          const td = document.createElement('td');
+          td.innerHTML = slot
+            ? `<strong>${slot.disciplina}</strong><br>${slot.grupa}<br>${slot.sala}`
+            : '';
+          tr.appendChild(td);
+        });
+        body.appendChild(tr);
+      });
+    }
+
+    main();
+  </script>
+</body>
+</html>

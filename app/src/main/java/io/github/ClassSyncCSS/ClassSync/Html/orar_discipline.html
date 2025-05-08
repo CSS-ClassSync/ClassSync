@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Orar pentru disciplină</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2 id="titluOrar">Orar pentru disciplină</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Ora / Zi</th>
+        <th>Luni</th>
+        <th>Marți</th>
+        <th>Miercuri</th>
+        <th>Joi</th>
+        <th>Vineri</th>
+      </tr>
+    </thead>
+    <tbody id="orarBody"></tbody>
+  </table>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const materie = urlParams.get('materie');
+
+    const orareMaterii = {
+      "Advanced Programming": {
+        "Luni": {
+          "10:00–12:00": { sala: "C101", profesor: "Popescu", grupa: "MIAO1" }
+        },
+        "Miercuri": {
+          "12:00–14:00": { sala: "C101", profesor: "Popescu", grupa: "MIAO1" }
+        }
+      },
+      "Algebraic Foundations of Computer Science": {
+        "Marti": {
+          "08:00–10:00": { sala: "C302", profesor: "Ionescu", grupa: "MIAO1" }
+        }
+      }
+    };
+
+    const titlu = materie ? `Orar pentru disciplina ${materie}` : "Orar";
+    document.getElementById('titluOrar').textContent = titlu;
+
+    const zile = ["Luni", "Marti", "Miercuri", "Joi", "Vineri"];
+    const intervale = ["08:00–10:00", "10:00–12:00", "12:00–14:00", "14:00–16:00"];
+
+    const orar = materie ? orareMaterii[materie] : {}; 
+    const body = document.getElementById('orarBody');
+    intervale.forEach(interval => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td><strong>${interval}</strong></td>`;
+      zile.forEach(zi => {
+        const slot = orar?.[zi]?.[interval];
+        const td = document.createElement('td');
+        td.innerHTML = slot
+          ? `<strong>Sala: ${slot.sala}</strong><br>Profesor: ${slot.profesor}<br>Grupa: ${slot.grupa}`
+          : '';
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  </script>
+</body>
+</html>
