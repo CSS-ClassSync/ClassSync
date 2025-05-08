@@ -326,6 +326,13 @@ public class TimeTable {
         
         return result;
     }
-    
+
+
+    public String getGroupsJsonString() {
+        String s = "{}";
+
+        return s;
+    }
+
 }
 

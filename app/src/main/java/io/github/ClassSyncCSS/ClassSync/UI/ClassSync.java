@@ -5,10 +5,7 @@ import imgui.app.Application;
 import imgui.app.Configuration;
 import imgui.flag.*;
 import io.github.ClassSyncCSS.ClassSync.Domain.AllData;
-import io.github.ClassSyncCSS.ClassSync.UI.Controls.Calendar;
-import io.github.ClassSyncCSS.ClassSync.UI.Controls.Debug;
-import io.github.ClassSyncCSS.ClassSync.UI.Controls.Filters;
-import io.github.ClassSyncCSS.ClassSync.UI.Controls.SidePane;
+import io.github.ClassSyncCSS.ClassSync.UI.Controls.*;
 
 import java.util.ArrayList;
 
@@ -18,6 +15,7 @@ public class ClassSync extends Application {
     SidePane sidePane = new SidePane();
     Debug debug = new Debug();
     AllData allData;
+    Exporter exporter = new Exporter();
 
     public ClassSync() {
         this.allData = AllData.load();
@@ -27,6 +25,7 @@ public class ClassSync extends Application {
         this.calendar.setSidePaneRef(this.sidePane);
         this.calendar.setFiltersRef(this.filters);
         this.calendar.setData(allData);
+        this.exporter.setCalendarRef(calendar);
     }
 
 
@@ -51,6 +50,7 @@ public class ClassSync extends Application {
         this.calendar.process();
         this.sidePane.process();
         this.debug.process();
+        this.exporter.process();
     }
 
     public static void main(String[] args) {
