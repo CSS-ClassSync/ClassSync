@@ -4,8 +4,10 @@ import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiSelectableFlags;
 import io.github.ClassSyncCSS.ClassSync.Domain.ActivityType;
+import io.github.ClassSyncCSS.ClassSync.Domain.AllData;
 import io.github.ClassSyncCSS.ClassSync.Domain.Discipline;
 import io.github.ClassSyncCSS.ClassSync.Domain.TimeTableSlot;
+import io.github.ClassSyncCSS.ClassSync.Domain.Professor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +17,28 @@ public class SidePane {
     public List<TimeTableSlot> slots;
 
 
-    public SidePane() {
+    public SidePane(Filters filters) {
         slots = new ArrayList<>();
-        var slot = new TimeTableSlot(null, null, null,
-                                    null, null,
-                                new Discipline("Test Discipline", null, null),
-                                ActivityType.Course);
-        slots.add(slot);
+        List<Discipline> disciplines = AllData.load().getDisciplines();
+        Professor selectedProfessor = filters.getSelectedProfessor();
+
+//        if (selectedProfessor != null) {
+//            // Filter disciplines that include the selected professor
+//            disciplines = disciplines.stream()
+//                    .filter(d -> (d.getCourseProfs() != null && d.getCourseProfs().contains(selectedProfessor)) ||
+//                            (d.getLaboratoryProfs() != null && d.getLaboratoryProfs().contains(selectedProfessor)))
+//                    .toList();
+//        }
+
+        for (Discipline discipline : disciplines) {
+            var slot = new TimeTableSlot(
+                    null, null, null,
+                    null, null,
+                    discipline,
+                    ActivityType.Course
+            );
+            slots.add(slot);
+        }
     }
 
     public void process() {
