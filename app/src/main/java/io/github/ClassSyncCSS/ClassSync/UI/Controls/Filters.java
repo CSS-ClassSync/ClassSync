@@ -40,6 +40,35 @@ public class Filters {
         this.updateFilters();
     }
 
+    public Professor getSelectedProfessor() {
+        if (filteredProfessors != null && selectedProfessor.get() >= 0 && selectedProfessor.get() < filteredProfessors.size()) {
+            return filteredProfessors.get(selectedProfessor.get());
+        }
+        return null;
+    }
+
+    public Group getSelectedGroup() {
+        if (filteredGroups != null && selectedGroup.get() >= 0 && selectedGroup.get() < filteredGroups.size()) {
+            return filteredGroups.get(selectedGroup.get());
+        }
+        return null;
+    }
+
+    public Discipline getSelectedDiscipline() {
+        if (filteredDisciplines != null && selectedDiscipline.get() >= 0 && selectedDiscipline.get() < filteredDisciplines.size()) {
+            return filteredDisciplines.get(selectedDiscipline.get());
+        }
+        return null;
+    }
+
+    public Room getSelectedRoom() {
+        if (filteredRooms != null && selectedRoom.get() >= 0 && selectedRoom.get() < filteredRooms.size()) {
+            return filteredRooms.get(selectedRoom.get());
+        }
+        return null;
+    }
+
+
     private void updateFilters() {
         // Preserve the current selections
         Professor previouslySelectedProfessor = selectedProfessor.get() > 0 ? filteredProfessors.get(selectedProfessor.get()) : null;
@@ -90,7 +119,7 @@ public class Filters {
 
                 if (hasProf && hasGroup)
                     filteredDisciplines.add(discipline);
-                }
+            }
         } else {
             filteredDisciplines.add(new Discipline()); // Add a placeholder for "All"
             filteredDisciplines.addAll(allData.getDisciplines());
@@ -137,10 +166,10 @@ public class Filters {
             selectedRoom.set(0); // Reset to "All" if not found
         }
 
-        if(previouslySelectedProfessor == null &&
-            previouslySelectedDiscipline == null &&
-            previouslySelectedGroup == null &&
-            previouslySelectedRoom == null) {
+        if (previouslySelectedProfessor == null &&
+                previouslySelectedDiscipline == null &&
+                previouslySelectedGroup == null &&
+                previouslySelectedRoom == null) {
 
             _areFiltersValid = false;
         } else {
@@ -170,122 +199,122 @@ public class Filters {
 
     public void process() {
         ImGui.begin("Filters");
-            float window_width = ImGui.getWindowWidth();
-            float one_filter_width = window_width * 0.7f * 0.248f;
+        float window_width = ImGui.getWindowWidth();
+        float one_filter_width = window_width * 0.7f * 0.248f;
 
-            // ----- Professors filter
-            List<Professor> professors = getFilteredProfessors();
-            ImGui.setNextItemWidth(one_filter_width);
+        // ----- Professors filter
+        List<Professor> professors = getFilteredProfessors();
+        ImGui.setNextItemWidth(one_filter_width);
 
-            Professor selected_professor = professors.get(selectedProfessor.get());
+        Professor selected_professor = professors.get(selectedProfessor.get());
 
-            if(ImGui.beginCombo("##Professor", "Professor: " + selected_professor.getName())) {
-                ImGui.setNextItemWidth(one_filter_width - 10);
+        if (ImGui.beginCombo("##Professor", "Professor: " + selected_professor.getName())) {
+            ImGui.setNextItemWidth(one_filter_width - 10);
 
-                if(ImGui.inputText("##ProfessorText", professorFilterInputText)) {
-                    professorFilter.setInputBuffer(professorFilterInputText.toString());
-                    professorFilter.build();
-                }
-
-                for (int i = 0; i < professors.size(); i++) {
-                    boolean isSelected = (selectedProfessor.get() == i);
-
-                    if (professorFilter.passFilter(professors.get(i).getName()) && ImGui.selectable(professors.get(i).getName(), isSelected)) {
-                        selectedProfessor.set(i); // Update the selected index
-                        updateFilters();
-                    }
-
-                    if (isSelected) {
-                        ImGui.setItemDefaultFocus();
-                    }
-                }
-                ImGui.endCombo();
+            if (ImGui.inputText("##ProfessorText", professorFilterInputText)) {
+                professorFilter.setInputBuffer(professorFilterInputText.toString());
+                professorFilter.build();
             }
 
-            ImGui.sameLine();
+            for (int i = 0; i < professors.size(); i++) {
+                boolean isSelected = (selectedProfessor.get() == i);
 
-            // ----- Group filter
-            List<Group> groups = getFilteredGroups();
-            ImGui.setNextItemWidth(one_filter_width);
-            if(ImGui.beginCombo("##Group", "Group: " + groups.get(selectedGroup.get()).getName())) {
-                ImGui.setNextItemWidth(one_filter_width - 10);
-
-                if(ImGui.inputText("##GroupText", groupFilterInputText)) {
-                    groupFilter.setInputBuffer(groupFilterInputText.toString());
-                    groupFilter.build();
+                if (professorFilter.passFilter(professors.get(i).getName()) && ImGui.selectable(professors.get(i).getName(), isSelected)) {
+                    selectedProfessor.set(i); // Update the selected index
+                    updateFilters();
                 }
 
-                for (int i = 0; i < groups.size(); i++) {
-                    boolean isSelected = (selectedGroup.get() == i);
-
-                    if (groupFilter.passFilter(groups.get(i).getName()) && ImGui.selectable(groups.get(i).getName(), isSelected)) {
-                        selectedGroup.set(i); // Update the selected index
-                        updateFilters();
-                    }
-
-                    if (isSelected) {
-                        ImGui.setItemDefaultFocus();
-                    }
+                if (isSelected) {
+                    ImGui.setItemDefaultFocus();
                 }
-                ImGui.endCombo();
+            }
+            ImGui.endCombo();
+        }
+
+        ImGui.sameLine();
+
+        // ----- Group filter
+        List<Group> groups = getFilteredGroups();
+        ImGui.setNextItemWidth(one_filter_width);
+        if (ImGui.beginCombo("##Group", "Group: " + groups.get(selectedGroup.get()).getName())) {
+            ImGui.setNextItemWidth(one_filter_width - 10);
+
+            if (ImGui.inputText("##GroupText", groupFilterInputText)) {
+                groupFilter.setInputBuffer(groupFilterInputText.toString());
+                groupFilter.build();
             }
 
-            ImGui.sameLine();
+            for (int i = 0; i < groups.size(); i++) {
+                boolean isSelected = (selectedGroup.get() == i);
 
-            // --- Discipline filter
-            List<Discipline> disciplines = getFilteredDisciplines();
-            ImGui.setNextItemWidth(one_filter_width);
-            if(ImGui.beginCombo("##Discipline", "Discipline: " + disciplines.get(selectedDiscipline.get()).getName())) {
-                ImGui.setNextItemWidth(one_filter_width - 10);
-
-                if(ImGui.inputText("##DisciplineText", disciplineFilterInputText)) {
-                    disciplineFilter.setInputBuffer(disciplineFilterInputText.toString());
-                    disciplineFilter.build();
+                if (groupFilter.passFilter(groups.get(i).getName()) && ImGui.selectable(groups.get(i).getName(), isSelected)) {
+                    selectedGroup.set(i); // Update the selected index
+                    updateFilters();
                 }
 
-                for (int i = 0; i < disciplines.size(); i++) {
-                    boolean isSelected = (selectedDiscipline.get() == i);
-
-                    if (disciplineFilter.passFilter(disciplines.get(i).getName()) && ImGui.selectable(disciplines.get(i).getName(), isSelected)) {
-                        selectedDiscipline.set(i); // Update the selected index
-                        updateFilters();
-                    }
-
-                    if (isSelected) {
-                        ImGui.setItemDefaultFocus();
-                    }
+                if (isSelected) {
+                    ImGui.setItemDefaultFocus();
                 }
-                ImGui.endCombo();
             }
-            ImGui.sameLine();
-            
-            // --- Room filter
-            List<Room> rooms = getFilteredRooms();
-            ImGui.setNextItemWidth(one_filter_width);
+            ImGui.endCombo();
+        }
 
-            if(ImGui.beginCombo("##Room", "Room: " + rooms.get(selectedRoom.get()).getName())) {
-                ImGui.setNextItemWidth(one_filter_width - 10);
+        ImGui.sameLine();
 
-                if(ImGui.inputText("##RoomText", roomFilterInputText)) {
-                    roomFilter.setInputBuffer(roomFilterInputText.toString());
-                    roomFilter.build();
-                }
+        // --- Discipline filter
+        List<Discipline> disciplines = getFilteredDisciplines();
+        ImGui.setNextItemWidth(one_filter_width);
+        if (ImGui.beginCombo("##Discipline", "Discipline: " + disciplines.get(selectedDiscipline.get()).getName())) {
+            ImGui.setNextItemWidth(one_filter_width - 10);
 
-                for (int i = 0; i < rooms.size(); i++) {
-                    boolean isSelected = (selectedRoom.get() == i);
-
-                    if (roomFilter.passFilter(rooms.get(i).getName()) && ImGui.selectable(rooms.get(i).getName(), isSelected)) {
-                        selectedRoom.set(i); // Update the selected index
-                        updateFilters();
-                    }
-
-                    if (isSelected) {
-                        ImGui.setItemDefaultFocus();
-                    }
-                }
-                ImGui.endCombo();
+            if (ImGui.inputText("##DisciplineText", disciplineFilterInputText)) {
+                disciplineFilter.setInputBuffer(disciplineFilterInputText.toString());
+                disciplineFilter.build();
             }
-            ImGui.sameLine();
+
+            for (int i = 0; i < disciplines.size(); i++) {
+                boolean isSelected = (selectedDiscipline.get() == i);
+
+                if (disciplineFilter.passFilter(disciplines.get(i).getName()) && ImGui.selectable(disciplines.get(i).getName(), isSelected)) {
+                    selectedDiscipline.set(i); // Update the selected index
+                    updateFilters();
+                }
+
+                if (isSelected) {
+                    ImGui.setItemDefaultFocus();
+                }
+            }
+            ImGui.endCombo();
+        }
+        ImGui.sameLine();
+
+        // --- Room filter
+        List<Room> rooms = getFilteredRooms();
+        ImGui.setNextItemWidth(one_filter_width);
+
+        if (ImGui.beginCombo("##Room", "Room: " + rooms.get(selectedRoom.get()).getName())) {
+            ImGui.setNextItemWidth(one_filter_width - 10);
+
+            if (ImGui.inputText("##RoomText", roomFilterInputText)) {
+                roomFilter.setInputBuffer(roomFilterInputText.toString());
+                roomFilter.build();
+            }
+
+            for (int i = 0; i < rooms.size(); i++) {
+                boolean isSelected = (selectedRoom.get() == i);
+
+                if (roomFilter.passFilter(rooms.get(i).getName()) && ImGui.selectable(rooms.get(i).getName(), isSelected)) {
+                    selectedRoom.set(i); // Update the selected index
+                    updateFilters();
+                }
+
+                if (isSelected) {
+                    ImGui.setItemDefaultFocus();
+                }
+            }
+            ImGui.endCombo();
+        }
+        ImGui.sameLine();
 
 
         ImGui.end();
