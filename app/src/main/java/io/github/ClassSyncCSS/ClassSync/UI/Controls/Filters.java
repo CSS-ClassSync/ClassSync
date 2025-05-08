@@ -35,9 +35,20 @@ public class Filters {
 
     private boolean _areFiltersValid = false;
 
+    private Calendar calendarRef;
+    private SidePane sidePaneRef;
+
     public Filters(AllData allData) {
         this.allData = allData;
         this.updateFilters();
+    }
+
+    public void setCalendarRef(Calendar calendarRef) {
+        this.calendarRef = calendarRef;
+    }
+
+    public void setSidePaneRef(SidePane sidePaneRef) {
+        this.sidePaneRef = sidePaneRef;
     }
 
     private void updateFilters() {
@@ -145,6 +156,8 @@ public class Filters {
             _areFiltersValid = false;
         } else {
             _areFiltersValid = true;
+
+            this.calendarRef.updateFilters();
         }
     }
 
@@ -166,6 +179,50 @@ public class Filters {
 
     public boolean areFiltersValid() {
         return _areFiltersValid;
+    }
+
+    /**
+     * Returns the currently selected Professor object.
+     * @return The selected Professor or null if "All" is selected
+     */
+    public Professor getSelectedProfessor() {
+        if (filteredProfessors == null || filteredProfessors.isEmpty() || selectedProfessor.get() <= 0) {
+            return null; // Return null if "All" is selected (index 0) or no professors available
+        }
+        return filteredProfessors.get(selectedProfessor.get());
+    }
+
+    /**
+     * Returns the currently selected Group object.
+     * @return The selected Group or null if "All" is selected
+     */
+    public Group getSelectedGroup() {
+        if (filteredGroups == null || filteredGroups.isEmpty() || selectedGroup.get() <= 0) {
+            return null; // Return null if "All" is selected (index 0) or no groups available
+        }
+        return filteredGroups.get(selectedGroup.get());
+    }
+
+    /**
+     * Returns the currently selected Discipline object.
+     * @return The selected Discipline or null if "All" is selected
+     */
+    public Discipline getSelectedDiscipline() {
+        if (filteredDisciplines == null || filteredDisciplines.isEmpty() || selectedDiscipline.get() <= 0) {
+            return null; // Return null if "All" is selected (index 0) or no disciplines available
+        }
+        return filteredDisciplines.get(selectedDiscipline.get());
+    }
+
+    /**
+     * Returns the currently selected Room object.
+     * @return The selected Room or null if "All" is selected
+     */
+    public Room getSelectedRoom() {
+        if (filteredRooms == null || filteredRooms.isEmpty() || selectedRoom.get() <= 0) {
+            return null; // Return null if "All" is selected (index 0) or no rooms available
+        }
+        return filteredRooms.get(selectedRoom.get());
     }
 
     public void process() {
