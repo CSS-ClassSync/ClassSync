@@ -6,16 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 public class TimeTable {
+    // Change the key types in the maps from objects to strings
+    Map<String, List<TimeTableSlot>> classesRemainingByProfessor = new HashMap<>();
+    Map<String, List<TimeTableSlot>> classesRemainingByGroup = new HashMap<>();
+    Map<String, List<TimeTableSlot>> classesRemainingByDisipline = new HashMap<>();
+    
     Map<String, Map<Weekday, Map<TimeSlot, TimeTableSlot>>> scheduleByGroup = new HashMap<>();
     Map<String, Map<Weekday, Map<TimeSlot, TimeTableSlot>>> scheduleByProfessor = new HashMap<>();
     Map<String, Map<Weekday, Map<TimeSlot, TimeTableSlot>>> scheduleByRoom = new HashMap<>();
     Map<String, Map<Weekday, Map<TimeSlot, TimeTableSlot>>> scheduleByDiscipline = new HashMap<>();
-
-    Map<Professor, List<TimeTableSlot>> classesRemainingByProfessor;
-    Map<Group, List<TimeTableSlot>> classesRemainingByGroup;
-    Map<Discipline, List<TimeTableSlot>> classesRemainingByDisipline;
-
-
 
     public void setData(AllData allData) {
         classesRemainingByProfessor = new HashMap<>();
@@ -45,35 +44,39 @@ public class TimeTable {
                         ActivityType.Lab
                 );
 
-                // Add to discipline map
-                if (!classesRemainingByDisipline.containsKey(discipline)) {
-                    classesRemainingByDisipline.put(discipline, new ArrayList<>());
+                // Add to discipline map - use name as key
+                String disciplineKey = discipline.getName();
+                if (!classesRemainingByDisipline.containsKey(disciplineKey)) {
+                    classesRemainingByDisipline.put(disciplineKey, new ArrayList<>());
                 }
-                classesRemainingByDisipline.get(discipline).add(course);
-                classesRemainingByDisipline.get(discipline).add(lab);
+                classesRemainingByDisipline.get(disciplineKey).add(course);
+                classesRemainingByDisipline.get(disciplineKey).add(lab);
 
-                // Add to group map
-                if (!classesRemainingByGroup.containsKey(group)) {
-                    classesRemainingByGroup.put(group, new ArrayList<>());
+                // Add to group map - use name as key
+                String groupKey = group.getName();
+                if (!classesRemainingByGroup.containsKey(groupKey)) {
+                    classesRemainingByGroup.put(groupKey, new ArrayList<>());
                 }
-                classesRemainingByGroup.get(group).add(course);
-                classesRemainingByGroup.get(group).add(lab);
+                classesRemainingByGroup.get(groupKey).add(course);
+                classesRemainingByGroup.get(groupKey).add(lab);
 
-                // Add to professors map
+                // Add to professors map - use name as key
                 List<Professor> courseProfs = discipline.getCourseProfs();
                 for(Professor professor : courseProfs) {
-                    if (!classesRemainingByProfessor.containsKey(professor)) {
-                        classesRemainingByProfessor.put(professor, new ArrayList<>());
+                    String professorKey = professor.getName();
+                    if (!classesRemainingByProfessor.containsKey(professorKey)) {
+                        classesRemainingByProfessor.put(professorKey, new ArrayList<>());
                     }
-                    classesRemainingByProfessor.get(professor).add(course);
+                    classesRemainingByProfessor.get(professorKey).add(course);
                 }
                 
                 List<Professor> labProfs = discipline.getLaboratoryProfs();
                 for(Professor professor : labProfs) {
-                    if (!classesRemainingByProfessor.containsKey(professor)) {
-                        classesRemainingByProfessor.put(professor, new ArrayList<>());
+                    String professorKey = professor.getName();
+                    if (!classesRemainingByProfessor.containsKey(professorKey)) {
+                        classesRemainingByProfessor.put(professorKey, new ArrayList<>());
                     }
-                    classesRemainingByProfessor.get(professor).add(lab);
+                    classesRemainingByProfessor.get(professorKey).add(lab);
                 }
             }
         }
@@ -113,7 +116,9 @@ public class TimeTable {
         if(room != null) insertSlot(scheduleByRoom, room.getName(), day, hours, slot);
         insertSlot(scheduleByDiscipline, slot.getDiscipline().getName(), day, hours, slot);
 
-        List<TimeTableSlot> groupSlots = classesRemainingByGroup.get(slot.getGroup());
+        // Update classesRemaining maps using string keys
+        String groupKey = slot.getGroup().getName();
+        List<TimeTableSlot> groupSlots = classesRemainingByGroup.get(groupKey);
         if(groupSlots != null) {
             groupSlots.removeIf(s -> 
                 s.getProfessor() == null || s.getProfessor().equals(slot.getProfessor()) &&
@@ -121,21 +126,25 @@ public class TimeTable {
                 s.getActivityType() == slot.getActivityType());
         }
         
-        List<TimeTableSlot> disciplineSlots = classesRemainingByDisipline.get(slot.getDiscipline());
+        String disciplineKey = slot.getDiscipline().getName();
+        List<TimeTableSlot> disciplineSlots = classesRemainingByDisipline.get(disciplineKey);
         if(disciplineSlots != null) {
             disciplineSlots.removeIf(s -> 
                 s.getGroup().equals(slot.getGroup()) && 
                 s.getActivityType() == slot.getActivityType());
         }
 
-        List<TimeTableSlot> professorSlots = classesRemainingByProfessor.get(professor);
-        if(professorSlots != null) {
-            professorSlots.removeIf(s -> 
-            s.getDiscipline().equals(slot.getDiscipline()) && 
-            s.getGroup().equals(slot.getGroup()) && 
-            s.getActivityType() == slot.getActivityType());
+        if (slot.getProfessor() != null) {
+            String professorKey = slot.getProfessor().getName();
+            List<TimeTableSlot> professorSlots = classesRemainingByProfessor.get(professorKey);
+            if(professorSlots != null) {
+                professorSlots.removeIf(s -> 
+                s.getDiscipline().equals(slot.getDiscipline()) && 
+                s.getGroup().equals(slot.getGroup()) && 
+                s.getActivityType() == slot.getActivityType());
+            }
         }
-
+        
         return true;
     }
 
@@ -197,37 +206,59 @@ public class TimeTable {
                 slot.getDiscipline(), slot.getActivityType()
             );
             
-            // Add to group map
-            if (!classesRemainingByGroup.containsKey(slot.getGroup())) {
-                classesRemainingByGroup.put(slot.getGroup(), new ArrayList<>());
+            // Add to group map using string key
+            String groupKey = slot.getGroup().getName();
+            if (!classesRemainingByGroup.containsKey(groupKey)) {
+                classesRemainingByGroup.put(groupKey, new ArrayList<>());
             }
-            classesRemainingByGroup.get(slot.getGroup()).add(unscheduledSlot);
+            classesRemainingByGroup.get(groupKey).add(unscheduledSlot);
             
-            // Add to discipline map
-            if (!classesRemainingByDisipline.containsKey(slot.getDiscipline())) {
-                classesRemainingByDisipline.put(slot.getDiscipline(), new ArrayList<>());
+            // Add to discipline map using string key
+            String disciplineKey = slot.getDiscipline().getName();
+            if (!classesRemainingByDisipline.containsKey(disciplineKey)) {
+                classesRemainingByDisipline.put(disciplineKey, new ArrayList<>());
             }
-            classesRemainingByDisipline.get(slot.getDiscipline()).add(unscheduledSlot);
+            classesRemainingByDisipline.get(disciplineKey).add(unscheduledSlot);
             
-            // Add to professor map
-            if (!classesRemainingByProfessor.containsKey(slot.getProfessor())) {
-                classesRemainingByProfessor.put(slot.getProfessor(), new ArrayList<>());
+            // Add to professor map using string key
+            if (slot.getProfessor() != null) {
+                String professorKey = slot.getProfessor().getName();
+                if (!classesRemainingByProfessor.containsKey(professorKey)) {
+                    classesRemainingByProfessor.put(professorKey, new ArrayList<>());
+                }
+                classesRemainingByProfessor.get(professorKey).add(unscheduledSlot);
             }
-            classesRemainingByProfessor.get(slot.getProfessor()).add(unscheduledSlot);
         }
-
+        
         return removed;
     }
-
-    public Map<Professor, List<TimeTableSlot>> getClassesRemainingByProfessor() {
+    
+    // Update getters to use string keys
+    public List<TimeTableSlot> getClassesRemainingByGroup(Group group) {
+        if (group == null) return new ArrayList<>();
+        return classesRemainingByGroup.getOrDefault(group.getName(), new ArrayList<>());
+    }
+    
+    public List<TimeTableSlot> getClassesRemainingByProfessor(Professor professor) {
+        if (professor == null) return new ArrayList<>();
+        return classesRemainingByProfessor.getOrDefault(professor.getName(), new ArrayList<>());
+    }
+    
+    public List<TimeTableSlot> getClassesRemainingByDiscipline(Discipline discipline) {
+        if (discipline == null) return new ArrayList<>();
+        return classesRemainingByDisipline.getOrDefault(discipline.getName(), new ArrayList<>());
+    }
+    
+    // For backward compatibility - these should be updated wherever they're used
+    public Map<String, List<TimeTableSlot>> getAllClassesRemainingByProfessor() {
         return classesRemainingByProfessor;
     }
-
-    public Map<Group, List<TimeTableSlot>> getClassesRemainingByGroup() {
+    
+    public Map<String, List<TimeTableSlot>> getAllClassesRemainingByGroup() {
         return classesRemainingByGroup;
     }
-
-    public Map<Discipline, List<TimeTableSlot>> getClassesRemainingByDisipline() {
+    
+    public Map<String, List<TimeTableSlot>> getAllClassesRemainingByDiscipline() {
         return classesRemainingByDisipline;
     }
 
@@ -237,7 +268,7 @@ public class TimeTable {
      * @return A map of weekday to list of timeslots for this group
      */
     public Map<Weekday, List<TimeTableSlot>> getScheduleByGroup(Group group) {
-        if (group == null) return null;
+        if (group == null) return new HashMap<>();
         String key = group.getName();
         return convertScheduleFormat(scheduleByGroup.get(key));
     }
@@ -248,7 +279,7 @@ public class TimeTable {
      * @return A map of weekday to list of timeslots for this professor
      */
     public Map<Weekday, List<TimeTableSlot>> getScheduleByProfessor(Professor professor) {
-        if (professor == null) return null;
+        if (professor == null) return new HashMap<>();
         String key = professor.getName();
         return convertScheduleFormat(scheduleByProfessor.get(key));
     }
@@ -259,7 +290,7 @@ public class TimeTable {
      * @return A map of weekday to list of timeslots for this room
      */
     public Map<Weekday, List<TimeTableSlot>> getScheduleByRoom(Room room) {
-        if (room == null) return null;
+        if (room == null) return new HashMap<>();
         String key = room.getName();
         return convertScheduleFormat(scheduleByRoom.get(key));
     }
@@ -270,7 +301,7 @@ public class TimeTable {
      * @return A map of weekday to list of timeslots for this discipline
      */
     public Map<Weekday, List<TimeTableSlot>> getScheduleByDiscipline(Discipline discipline) {
-        if (discipline == null) return null;
+        if (discipline == null) return new HashMap<>();
         String key = discipline.getName();
         return convertScheduleFormat(scheduleByDiscipline.get(key));
     }
@@ -281,9 +312,9 @@ public class TimeTable {
      * @return A map of Weekday to List of TimeTableSlots
      */
     private Map<Weekday, List<TimeTableSlot>> convertScheduleFormat(Map<Weekday, Map<TimeSlot, TimeTableSlot>> scheduleMap) {
-        if (scheduleMap == null) return new HashMap<>();
-        
         Map<Weekday, List<TimeTableSlot>> result = new HashMap<>();
+        
+        if (scheduleMap == null) return result;
         
         for (Map.Entry<Weekday, Map<TimeSlot, TimeTableSlot>> entry : scheduleMap.entrySet()) {
             Weekday weekday = entry.getKey();
@@ -295,5 +326,6 @@ public class TimeTable {
         
         return result;
     }
+    
 }
 
