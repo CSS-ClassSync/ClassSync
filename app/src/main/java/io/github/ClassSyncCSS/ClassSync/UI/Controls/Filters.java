@@ -72,19 +72,25 @@ public class Filters {
             filteredProfessors.add(new Professor()); // Add a placeholder for "All"
             filteredProfessors.addAll(allData.getProfessors());
         }
-
-
-
+        
         // Filter disciplines based on the selected professor
         filteredDisciplines = new ArrayList<>();
-        if (selectedProfessor.get() > 0) {
+        if (selectedProfessor.get() > 0 || selectedGroup.get() > 0) {
             Professor selectedProfessorObj = previouslySelectedProfessor;
+            Group selectedGroupObj = previouslySelectedGroup;
+
             filteredDisciplines.add(new Discipline()); // Add a placeholder for "All"
             for (Discipline discipline : allData.getDisciplines()) {
-                if (discipline.getCourseProfs().contains(selectedProfessorObj) || discipline.getLaboratoryProfs().contains(selectedProfessorObj)) {
+
+                boolean hasCourseProf = discipline.getCourseProfs().contains(selectedProfessorObj);
+                boolean hasLabProf = discipline.getLaboratoryProfs().contains(selectedProfessorObj);
+
+                boolean hasProf = selectedProfessorObj == null || hasCourseProf || hasLabProf;
+                boolean hasGroup = selectedGroupObj == null || selectedGroupObj.getDisciplines().contains(discipline);
+
+                if (hasProf && hasGroup)
                     filteredDisciplines.add(discipline);
                 }
-            }
         } else {
             filteredDisciplines.add(new Discipline()); // Add a placeholder for "All"
             filteredDisciplines.addAll(allData.getDisciplines());
