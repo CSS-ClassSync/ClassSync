@@ -72,7 +72,7 @@ public class Filters {
             filteredProfessors.add(new Professor()); // Add a placeholder for "All"
             filteredProfessors.addAll(allData.getProfessors());
         }
-        
+
         // Filter disciplines based on the selected professor
         filteredDisciplines = new ArrayList<>();
         if (selectedProfessor.get() > 0 || selectedGroup.get() > 0) {

@@ -24,6 +24,7 @@ public class ClassSync extends Application {
         System.out.println(allData);
 
         this.filters = new Filters(allData);
+        this.calendar.setSidePaneRef(this.sidePane);
     }
 
 

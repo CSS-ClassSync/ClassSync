@@ -9,14 +9,24 @@ public class TimeTableSlot {
     private Room room;
     private Group group;
     private Discipline discipline;
+    private ActivityType activityType;
 
-    public TimeTableSlot(Weekday weekday, TimeSlot slot, Professor professor, Room room, Group group, Discipline discipline) {
+    public TimeTableSlot(Weekday weekday, TimeSlot slot, Professor professor, Room room, Group group, Discipline discipline, ActivityType activityType) {
         this.weekday = weekday;
         this.slot = slot;
         this.professor = professor;
         this.room = room;
         this.group = group;
         this.discipline = discipline;
+        this.activityType = activityType;
+    }
+
+    public ActivityType getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(ActivityType activityType) {
+        this.activityType = activityType;
     }
 
     public Weekday getWeekday() {
