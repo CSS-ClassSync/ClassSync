@@ -8,6 +8,7 @@ repositories {
 
 dependencies {
     implementation("io.github.spair:imgui-java-app:1.89.0")
+    implementation ("com.fasterxml.jackson.core:jackson-databind:2.15.2")
 }
 
 java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
