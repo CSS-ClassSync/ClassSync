@@ -6,7 +6,7 @@ public class Debug {
 
     public void process() {
         ImGui.begin("Debug");
-            ImGui.text(String.format("%f", ImGui.getIO().getFramerate()));
+            ImGui.text(String.format("FPS: %f", ImGui.getIO().getFramerate()));
         ImGui.end();
     }
 }

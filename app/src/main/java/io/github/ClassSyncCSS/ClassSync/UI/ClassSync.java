@@ -21,10 +21,12 @@ public class ClassSync extends Application {
 
     public ClassSync() {
         this.allData = AllData.load();
-        System.out.println(allData);
+//        System.out.println(allData);
 
         this.filters = new Filters(allData);
         this.calendar.setSidePaneRef(this.sidePane);
+        this.calendar.setFiltersRef(this.filters);
+        this.calendar.setData(allData);
     }
 
 

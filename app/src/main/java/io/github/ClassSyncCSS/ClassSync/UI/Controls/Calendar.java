@@ -7,17 +7,19 @@ import imgui.flag.ImGuiSelectableFlags;
 import imgui.flag.ImGuiTableFlags;
 import io.github.ClassSyncCSS.ClassSync.Domain.*;
 
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
+import java.util.List;
 
 public class Calendar {
     TimeSlot[] timeIntervals = {
             TimeSlot.EightToTen, TimeSlot.TenToTwelve, TimeSlot.TwelveToFourteen, TimeSlot.FourteenToSixteen, TimeSlot.SixteenToEighteen, TimeSlot.EighteenToTwenty,
     };
+    TimeTable fullTimeTable;
     TimeTableSlot[][] scheduleData;
 
     private SidePane sidePaneRef;
+    private Filters filtersRef;
 
     public Calendar() {
         scheduleData = new TimeTableSlot[timeIntervals.length][Weekday.values().length];
@@ -26,14 +28,25 @@ public class Calendar {
                 scheduleData[i][j] = null;
             }
         }
+        fullTimeTable = new TimeTable();
 
         // Initialize the scheduleData with some dummy data
-        scheduleData[0][0] = new TimeTableSlot(Weekday.Monday, timeIntervals[0], null, null, null, new Discipline(), ActivityType.Course);
-        scheduleData[0][1] = new TimeTableSlot(Weekday.Monday, timeIntervals[0], null, null, null, new Discipline(), ActivityType.Lab);
+//        scheduleData[0][0] = new TimeTableSlot(Weekday.Monday, timeIntervals[0], null, null, null, new Discipline(), ActivityType.Course);
+//        scheduleData[0][1] = new TimeTableSlot(Weekday.Monday, timeIntervals[0], null, null, null, new Discipline(), ActivityType.Lab);
+    }
+
+    public void setData(AllData data) {
+        fullTimeTable.setData(data);
     }
 
     public void setSidePaneRef(SidePane pane) {
         this.sidePaneRef = pane;
+    }
+
+    public void setFiltersRef(Filters filters) {
+        this.filtersRef = filters;
+        this.filtersRef.setCalendarRef(this);
+        this.filtersRef.setSidePaneRef(this.sidePaneRef);
     }
 
     public static final String PAYLOAD_TYPE_SCHEDULE_CELL = "SCHEDULE_CELL";
@@ -41,6 +54,45 @@ public class Calendar {
     public void process() {
         ImGui.begin("Calendar");
 
+        if(filtersRef.areFiltersValid()) {
+            displayTable();
+        } else {
+            ImGui.textColored(0xfffc5f53, "The filters you have selected are too broad, please narrow your search.");
+        }
+
+        ImGui.end();
+    }
+
+    public void updateFilters() {
+        Professor selectedProf = filtersRef.getSelectedProfessor();
+        Group selectedGroup = filtersRef.getSelectedGroup();
+        Discipline selectedDiscipline = filtersRef.getSelectedDiscipline();
+        Room selectedRoom = filtersRef.getSelectedRoom();
+
+        // --- Side pane
+        List<TimeTableSlot> classesRemaining = new ArrayList<>();
+
+        if(selectedGroup != null) {
+            classesRemaining.addAll(fullTimeTable.getClassesRemainingByGroup().get(selectedGroup));
+        }
+        if(selectedProf != null) {
+
+            if(classesRemaining.isEmpty()) {
+                // We're doing just this
+                classesRemaining.addAll(fullTimeTable.getClassesRemainingByProfessor().get(selectedProf));
+            } else {
+                // We're multi-filtering
+            }
+        }
+
+        this.sidePaneRef.slots = classesRemaining;
+
+        // --- Actual Calendar
+
+
+    }
+
+    private void displayTable() {
         float height = ImGui.getWindowHeight() * (0.945f / timeIntervals.length);
 
         if (ImGui.beginTable("test", 6, ImGuiTableFlags.Borders)) {
@@ -137,7 +189,5 @@ public class Calendar {
 
             ImGui.endTable();
         }
-
-        ImGui.end();
     }
 }
