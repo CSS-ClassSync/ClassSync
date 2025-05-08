@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class ClassSync extends Application {
     Filters filters;
     Calendar calendar = new Calendar();
-    SidePane sidePane;
+    SidePane sidePane = new SidePane();
     Debug debug = new Debug();
     AllData allData;
 
@@ -24,7 +24,6 @@ public class ClassSync extends Application {
         System.out.println(allData);
 
         this.filters = new Filters(allData);
-        this.sidePane= new SidePane(filters);
         this.calendar.setSidePaneRef(this.sidePane);
     }
 
