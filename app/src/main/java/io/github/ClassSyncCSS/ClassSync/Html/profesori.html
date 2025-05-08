@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Profesori</title>
+</head>
+<body>
+  <h2>Lista profesorilor și materiile predate</h2>
+  <ul id="listaProfesori"></ul>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    async function loadCSV(url) {
+      const response = await fetch(url);
+      const text = await response.text();
+      return Papa.parse(text, { header: true }).data;
+    }
+
+    async function main() {
+      const profesori = await loadCSV('data/profesori.csv');
+      const profesoriMaterii = await loadCSV('data/profesori_materii.csv');
+      const materii = await loadCSV('data/materii.csv');
+      const lista = document.getElementById('listaProfesori');
+
+      profesori.forEach(prof => {
+        const materiiIds = profesoriMaterii
+          .filter(pm => pm.profesor === prof.id)
+          .map(pm => pm.materie);
+
+        const nameMaterii = materiiIds
+          .map(id => materii.find(mat => mat.id === id))
+          .filter(m => m !== undefined)  
+          .map(m => `${m.name} (${m.tip})`);
+
+        if (nameMaterii.length === 0) return; 
+
+        const li = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `orar_profesori.html?profesor=${encodeURIComponent(prof.id)}`;
+        link.textContent = `${prof.name} (${prof.rol})`;
+        li.appendChild(link);
+        li.innerHTML += `<br>Materii: ${nameMaterii.join(', ')}`;
+        lista.appendChild(li);
+      });
+    }
+
+    main();
+  </script>
+</body>
+</html>
