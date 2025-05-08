@@ -71,25 +71,25 @@ public class Calendar {
         List<TimeTableSlot> classesRemaining = new ArrayList<>();
 
         if (selectedGroup != null) {
-            classesRemaining.addAll(fullTimeTable.getClassesRemainingByGroup().get(selectedGroup));
+            classesRemaining.addAll(fullTimeTable.getClassesRemainingByGroup(selectedGroup));
         }
         if (selectedProf != null) {
 
             if (classesRemaining.isEmpty()) {
                 // We're doing just this
-                classesRemaining.addAll(fullTimeTable.getClassesRemainingByProfessor().get(selectedProf));
+                classesRemaining.addAll(fullTimeTable.getClassesRemainingByProfessor(selectedProf));
             } else {
                 // We're multi-filtering
-                classesRemaining.retainAll(fullTimeTable.getClassesRemainingByProfessor().get(selectedProf));
+                classesRemaining.retainAll(fullTimeTable.getClassesRemainingByProfessor(selectedProf));
             }
         }
         if (selectedDiscipline != null) {
             if (classesRemaining.isEmpty()) {
                 // We're doing just this
-                classesRemaining.addAll(fullTimeTable.getClassesRemainingByDisipline().get(selectedDiscipline));
+                classesRemaining.addAll(fullTimeTable.getClassesRemainingByDiscipline(selectedDiscipline));
             } else {
                 // We're multi-filtering
-                classesRemaining.retainAll(fullTimeTable.getClassesRemainingByDisipline().get(selectedDiscipline));
+                classesRemaining.retainAll(fullTimeTable.getClassesRemainingByDiscipline(selectedDiscipline));
             }
         }
 
