@@ -334,5 +334,9 @@ public class TimeTable {
         return s;
     }
 
+    public Map<String, Map<Weekday, Map<TimeSlot, TimeTableSlot>>> getScheduleByGroupRaw() {
+        return scheduleByGroup;
+    }
+
 }
 

@@ -55,6 +55,8 @@ public class SidePane {
                 ImGui.text(String.format("%s - %s", slot.getDiscipline().getName(), slot.getActivityType().name()));
                 ImGui.text(String.format("Group: %s", slot.getGroup().getName()));
             }
+            
+
             ImGui.endGroup();
 
         }
