@@ -1,40 +1,57 @@
 package io.github.ClassSyncCSS.ClassSync.UI;
 
+import imgui.ImGui;
+import imgui.app.Application;
+import imgui.app.Configuration;
+import imgui.flag.*;
 import io.github.ClassSyncCSS.ClassSync.Domain.AllData;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import io.github.ClassSyncCSS.ClassSync.UI.Controls.Calendar;
+import io.github.ClassSyncCSS.ClassSync.UI.Controls.Debug;
+import io.github.ClassSyncCSS.ClassSync.UI.Controls.Filters;
+import io.github.ClassSyncCSS.ClassSync.UI.Controls.SidePane;
+
+import java.util.ArrayList;
 
 public class ClassSync extends Application {
+    Filters filters;
+    Calendar calendar = new Calendar();
+    SidePane sidePane = new SidePane();
+    Debug debug = new Debug();
+    AllData allData;
+
+    public ClassSync() {
+        this.allData = AllData.load();
+        System.out.println(allData);
+
+        this.filters = new Filters(allData);
+        this.calendar.setSidePaneRef(this.sidePane);
+    }
+
 
     @Override
-    public void start(Stage primaryStage) {
-        // Create a label
-        Label label = new Label("Hello, JavaFX!");
+    protected void configure(Configuration config) {
+        config.setTitle("Dear ImGui is Awesome!");
+    }
 
-        // Create a layout pane to hold the label
-        StackPane root = new StackPane();
-        root.getChildren().add(label);
+    @Override
+    public void preRun() {
+        var io = ImGui.getIO();
+        io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
+    }
 
-        // Create a scene
-        Scene scene = new Scene(root, 300, 200); // width, height
+    @Override
+    public void process() {
+        ImGui.dockSpaceOverViewport();
 
-        // Set the scene on the primary stage
-        primaryStage.setTitle("My First JavaFX App");
-        primaryStage.setScene(scene);
+        ImGui.getIO().setFramerate(144.0f);
 
-        AllData all = AllData.load();
-
-        System.out.println(all);
-
-        // Show the stage
-        primaryStage.show();
+        this.filters.process();
+        this.calendar.process();
+        this.sidePane.process();
+        this.debug.process();
     }
 
     public static void main(String[] args) {
-        // Launch the JavaFX application
-        launch(args);
+        launch(new ClassSync());
     }
 }

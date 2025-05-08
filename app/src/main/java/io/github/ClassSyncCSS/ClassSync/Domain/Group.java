@@ -8,6 +8,10 @@ public class Group {
     private Year year;
     private List<Discipline> disciplines;
 
+    public Group() {
+        this.name = "----";
+    }
+
     public Group(String name, Year year, List<Discipline> disciplines) {
         this.name = name;
         this.year = year;

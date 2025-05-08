@@ -7,6 +7,10 @@ public class Room {
     private String name;
     private List<ActivityType> type;
 
+    public Room() {
+        this.name = "----";
+    }
+
     public Room(String name, List<ActivityType> type) {
         this.name = name;
         this.type = type;
