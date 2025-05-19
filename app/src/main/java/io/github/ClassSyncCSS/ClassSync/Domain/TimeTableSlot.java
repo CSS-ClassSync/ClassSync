@@ -11,6 +11,19 @@ public class TimeTableSlot {
     private Discipline discipline;
     private ActivityType activityType;
 
+    @Override
+    public String toString() {
+        return "TimeTableSlot{" +
+                "weekday=" + weekday +
+                ", slot=" + slot +
+                ", professor=" + professor +
+                ", room=" + room +
+                ", group=" + group +
+                ", discipline=" + discipline +
+                ", activityType=" + activityType +
+                '}';
+    }
+
     public TimeTableSlot(Weekday weekday, TimeSlot slot, Professor professor, Room room, Group group, Discipline discipline, ActivityType activityType) {
         this.weekday = weekday;
         this.slot = slot;

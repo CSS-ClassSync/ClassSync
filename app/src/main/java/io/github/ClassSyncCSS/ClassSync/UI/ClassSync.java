@@ -26,6 +26,8 @@ public class ClassSync extends Application {
         this.calendar.setFiltersRef(this.filters);
         this.calendar.setData(allData);
         this.exporter.setCalendarRef(calendar);
+
+        this.sidePane.setAllData(allData);
     }
 
 

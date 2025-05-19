@@ -28,8 +28,8 @@ public class TimeTable {
                 TimeTableSlot course = new TimeTableSlot(
                         null,
                         null,
-                        null,
-                        null,
+                        discipline.getCourseProfs().size() > 0?discipline.getCourseProfs().get(0):null,
+                        allData.getRooms().get(0),
                         group,
                         discipline,
                         ActivityType.Course
@@ -37,8 +37,8 @@ public class TimeTable {
                 TimeTableSlot lab = new TimeTableSlot(
                         null,
                         null,
-                        null,
-                        null,
+                        discipline.getLaboratoryProfs().size() > 0?discipline.getLaboratoryProfs().getFirst():null,
+                        allData.getRooms().get(0),
                         group,
                         discipline,
                         ActivityType.Lab

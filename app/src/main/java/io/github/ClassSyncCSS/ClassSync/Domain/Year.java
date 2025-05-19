@@ -1,10 +1,13 @@
 package io.github.ClassSyncCSS.ClassSync.Domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Year {
     private String year;
+    @JsonIgnore
     private List<Specialization> specializations;
 
     public Year(String year, List<Specialization> specializations) {
