@@ -14,7 +14,7 @@ public class TimeSlot {
     private final int start;
     private final int end;
 
-    private TimeSlot(int start, int end) {
+    public TimeSlot(int start, int end) {
         this.start = start;
         this.end = end;
     }
