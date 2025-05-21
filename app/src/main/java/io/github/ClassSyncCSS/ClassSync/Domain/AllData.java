@@ -48,10 +48,10 @@ public class AllData {
     }
 
     public static AllData load() {
-        String path = new File("src/main/resources/").getAbsolutePath();
-//        System.out.println(path.concat("/ani.csv"));
-//        System.out.println(path);
+        return load("src/main/resources");
+    }
 
+    public static AllData load(String path) {
         List<List<String>> yearsD = loadCsv(path.concat("/ani.csv"));
         List<List<String>> groupsD = loadCsv(path.concat("/grupe.csv"));
         List<List<String>> profsD = loadCsv(path.concat("/profesori.csv"));
@@ -229,6 +229,11 @@ public class AllData {
                         .filter(d -> d.getFirst().equals(profDiscipline.getLast()))
                         .findFirst().orElse(null);
 
+                if (discTemp == null)
+                {
+                    continue;
+                }
+
                 Discipline d = disciplines.stream()
                         .filter(d2 -> d2.getName().equals(discTemp.get(1)))
                         .findFirst().orElse(null);
@@ -347,8 +352,25 @@ public class AllData {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
+                if (!line.contains(COMMA_DELIMITER))
+                {
+                    throw new RuntimeException("Invalid CSV format: " + filePath);
+                }
                 String[] values = line.split(COMMA_DELIMITER);
                 records.add(Arrays.asList(values));
+            }
+            if (records.stream().map(List::size).distinct().count() != 1)
+            {
+                throw new IndexOutOfBoundsException("Invalid CSV format: " + filePath);
+            }
+            if (records.getFirst().contains("id"))
+            {
+                int idIndex = records.getFirst().indexOf("id");
+                Set ids = records.stream().filter(r -> records.indexOf(r) != 0).map(r -> r.get(idIndex)).collect(Collectors.toSet());
+                if (ids.size() != records.size() - 1)
+                {
+                    throw new RuntimeException("Duplicate IDs in CSV: " + filePath);
+                }
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
