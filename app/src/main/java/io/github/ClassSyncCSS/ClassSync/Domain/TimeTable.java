@@ -248,19 +248,6 @@ public class TimeTable {
         if (discipline == null) return new ArrayList<>();
         return classesRemainingByDisipline.getOrDefault(discipline.getName(), new ArrayList<>());
     }
-    
-    // For backward compatibility - these should be updated wherever they're used
-    public Map<String, List<TimeTableSlot>> getAllClassesRemainingByProfessor() {
-        return classesRemainingByProfessor;
-    }
-    
-    public Map<String, List<TimeTableSlot>> getAllClassesRemainingByGroup() {
-        return classesRemainingByGroup;
-    }
-    
-    public Map<String, List<TimeTableSlot>> getAllClassesRemainingByDiscipline() {
-        return classesRemainingByDisipline;
-    }
 
     /**
      * Get the schedule for a specific group
@@ -325,13 +312,6 @@ public class TimeTable {
         }
         
         return result;
-    }
-
-
-    public String getGroupsJsonString() {
-        String s = "{}";
-
-        return s;
     }
 
     public Map<String, Map<Weekday, Map<TimeSlot, TimeTableSlot>>> getScheduleByGroupRaw() {
