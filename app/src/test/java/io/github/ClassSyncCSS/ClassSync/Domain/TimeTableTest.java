@@ -54,10 +54,14 @@ class TimeTableTest {
         TimeTableSlot slot1 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, null, null, group, discipline, ActivityType.Course);
         TimeTableSlot slot2 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, null, null, group, discipline, ActivityType.Lab);
 
-        timeTable.addDiscipline(slot1);
-        boolean result = timeTable.addDiscipline(slot2);
+        boolean result1 = timeTable.addDiscipline(slot1);
+        assertTrue(result1);
 
-        assertFalse(result);
+        boolean result2 = timeTable.addDiscipline(slot2);
+        assertFalse(result2);
+
+        assertFalse(timeTable.getClassesRemainingByGroup().isEmpty());
+        assertFalse(timeTable.getClassesRemainingByDisipline().isEmpty());
     }
 
     @Test
@@ -82,10 +86,14 @@ class TimeTableTest {
                 ActivityType.Course
         );
 
-        timeTable.addDiscipline(slot);
+        boolean add = timeTable.addDiscipline(slot);
+        assertTrue(add);
 
-        boolean removed = timeTable.removeDiscipline(slot);
-        assertTrue(removed);
+        boolean remove = timeTable.removeDiscipline(slot);
+        assertTrue(remove);
+        //assertTrue(timeTable.getClassesRemainingByDisipline().isEmpty());
+        //assertTrue(timeTable.getClassesRemainingByGroup().isEmpty());
+        //assertTrue(timeTable.getClassesRemainingByProfessor().isEmpty());
     }
 
 
