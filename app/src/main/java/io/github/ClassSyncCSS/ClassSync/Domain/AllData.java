@@ -7,12 +7,37 @@ import java.util.stream.Stream;
 
 public class AllData {
     private static final String COMMA_DELIMITER = ",";
-    private final List<Professor> professors;
-    private final List<Discipline> disciplines;
-    private final List<Specialization> specializations;
-    private final List<Year> years;
-    private final List<Group> groups;
-    private final List<Room> rooms;
+
+    public void setProfessors(List<Professor> professors) {
+        this.professors = professors;
+    }
+
+    public void setDisciplines(List<Discipline> disciplines) {
+        this.disciplines = disciplines;
+    }
+
+    public void setSpecializations(List<Specialization> specializations) {
+        this.specializations = specializations;
+    }
+
+    public void setYears(List<Year> years) {
+        this.years = years;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+
+    private List<Professor> professors;
+    private List<Discipline> disciplines;
+    private List<Specialization> specializations;
+    private List<Year> years;
+    private List<Group> groups;
+    private List<Room> rooms;
 
     public AllData(List<Professor> professors, List<Discipline> disciplines, List<Specialization> specializations, List<Year> years, List<Group> groups, List<Room> rooms) {
         this.professors = professors;

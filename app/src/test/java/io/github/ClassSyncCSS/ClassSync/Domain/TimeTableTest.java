@@ -22,12 +22,15 @@ class TimeTableTest {
         TimeTable timeTable = new TimeTable();
         Discipline discipline = new Discipline("Software Quality", new ArrayList<>(), new ArrayList<>());
         Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
+        Room room = new Room("C210", null);
         AllData allData = createAllDataWithGroup(group);
+        allData.setDisciplines(List.of(discipline));
+        allData.setRooms(List.of(room));
 
         timeTable.setData(allData);
 
-        assertFalse(timeTable.getClassesRemainingByGroup().isEmpty());
-        assertFalse(timeTable.getClassesRemainingByDisipline().isEmpty());
+        assertFalse(timeTable.getClassesRemainingByGroup(group).isEmpty());
+        assertFalse(timeTable.getClassesRemainingByDiscipline(discipline).isEmpty());
     }
 
     @Test
@@ -35,7 +38,10 @@ class TimeTableTest {
         TimeTable timeTable = new TimeTable();
         Discipline discipline = new Discipline("Software Quality", new ArrayList<>(), new ArrayList<>());
         Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
+        Room room = new Room("C210", List.of(ActivityType.Course));
         AllData allData = createAllDataWithGroup(group);
+        allData.setRooms(List.of(room));
+        allData.setDisciplines(List.of(discipline));
         timeTable.setData(allData);
         TimeTableSlot slot = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, null, null, group, discipline, ActivityType.Course);
 
@@ -49,7 +55,10 @@ class TimeTableTest {
         TimeTable timeTable = new TimeTable();
         Discipline discipline = new Discipline("Software Quality", new ArrayList<>(), new ArrayList<>());
         Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
+        Room room = new Room("C210", List.of(ActivityType.Course, ActivityType.Lab));
         AllData allData = createAllDataWithGroup(group);
+        allData.setDisciplines(List.of(discipline));
+        allData.setRooms(List.of(room));
         timeTable.setData(allData);
         TimeTableSlot slot1 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, null, null, group, discipline, ActivityType.Course);
         TimeTableSlot slot2 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, null, null, group, discipline, ActivityType.Lab);
@@ -60,8 +69,8 @@ class TimeTableTest {
         boolean result2 = timeTable.addDiscipline(slot2);
         assertFalse(result2);
 
-        assertFalse(timeTable.getClassesRemainingByGroup().isEmpty());
-        assertFalse(timeTable.getClassesRemainingByDisipline().isEmpty());
+        assertTrue(timeTable.getClassesRemainingByGroup(group).isEmpty());
+        assertFalse(timeTable.getClassesRemainingByDiscipline(discipline).isEmpty());
     }
 
     @Test
@@ -73,6 +82,8 @@ class TimeTableTest {
         Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
         Room room = new Room("C210", null);
         AllData allData = new AllData(List.of(professor), List.of(discipline), new ArrayList<>(), List.of(group.getYear()), List.of(group), new ArrayList<>());
+        allData.setDisciplines(List.of(discipline));
+        allData.setRooms(List.of(room));
 
         timeTable.setData(allData);
 
@@ -102,7 +113,10 @@ class TimeTableTest {
         TimeTable timeTable = new TimeTable();
         Discipline discipline = new Discipline("Software Quality", new ArrayList<>(), new ArrayList<>());
         Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
+        Room room = new Room("C210", List.of(ActivityType.Course));
         AllData allData = createAllDataWithGroup(group);
+        allData.setDisciplines(List.of(discipline));
+        allData.setRooms(List.of(room));
         timeTable.setData(allData);
         TimeTableSlot slot = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, null, null, group, discipline, ActivityType.Course);
 
