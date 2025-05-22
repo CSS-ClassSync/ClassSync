@@ -161,16 +161,16 @@ public class AllDataLoadTest {
         assertTrue(exception.getMessage().toLowerCase().contains("duplicate"));
     }
 
-//    @Test
-//    public void testLoadFailsWithOrphanReferences() throws IOException {
-//        writeCsv("materii_an.csv", List.of(
-//                "materie,an",
-//                "NON_EXISTENT_ID,TESTAN001"
-//        ));
-//
-//        Exception exception = assertThrows(RuntimeException.class, AllData::load);
-//        assertTrue(exception.getMessage().toLowerCase().contains("not found"));
-//    }
+    @Test
+    public void testLoadFailsWithOrphanReferences() throws IOException {
+        writeCsv("materii_an.csv", List.of(
+                "materie,an",
+                "NON_EXISTENT_ID,TESTAN001"
+        ));
+
+        Exception exception = assertThrows(RuntimeException.class, AllData::load);
+        assertTrue(exception.getMessage().toLowerCase().contains("not found"));
+    }
 
     @Test
     public void testLoadWithManyValidRows() throws IOException {
@@ -184,14 +184,14 @@ public class AllDataLoadTest {
         assertEquals(1000, data.getDisciplines().size());
     }
 
-//    @Test
-//    public void testLoadFailsWithIncorrectHeader() throws IOException {
-//        writeCsv("materii.csv", List.of(
-//                "identifier,name,tip",
-//                "MAT001,Algorithms,Curs"
-//        ));
-//
-//        Exception exception = assertThrows(RuntimeException.class, AllData::load);
-//        assertTrue(exception.getMessage().toLowerCase().contains("header"));
-//    }
+    @Test
+    public void testLoadFailsWithIncorrectHeader() throws IOException {
+        writeCsv("materii.csv", List.of(
+                "identifier,name,tip",
+                "MAT001,Algorithms,Curs"
+        ));
+
+        Exception exception = assertThrows(RuntimeException.class, AllData::load);
+        assertTrue(exception.getMessage().toLowerCase().contains("header"));
+    }
 }

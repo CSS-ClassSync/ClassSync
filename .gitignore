@@ -8,3 +8,5 @@ build
 .idea
 bin/
 app/bin/
+
+/app/src/main/java/io/github/ClassSyncCSS/ClassSync/Html/node_modules/
