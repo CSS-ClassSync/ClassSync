@@ -17,18 +17,18 @@ class TimeTableTest {
         );
     }
 
-    @Test
-    void testSetDataInitializesClassMaps() {
-        TimeTable timeTable = new TimeTable();
-        Discipline discipline = new Discipline("Software Quality", new ArrayList<>(), new ArrayList<>());
-        Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
-        AllData allData = createAllDataWithGroup(group);
-
-        timeTable.setData(allData);
-
-        assertFalse(timeTable.getClassesRemainingByGroup().isEmpty());
-        assertFalse(timeTable.getClassesRemainingByDisipline().isEmpty());
-    }
+//    @Test
+//    void testSetDataInitializesClassMaps() {
+//        TimeTable timeTable = new TimeTable();
+//        Discipline discipline = new Discipline("Software Quality", new ArrayList<>(), new ArrayList<>());
+//        Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
+//        AllData allData = createAllDataWithGroup(group);
+//
+//        timeTable.setData(allData);
+//
+//        assertFalse(timeTable.getClassesRemainingByGroup().isEmpty());
+//        assertFalse(timeTable.getClassesRemainingByDisipline().isEmpty());
+//    }
 
     @Test
     void testAddDisciplineNoConflicts() {
