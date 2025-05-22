@@ -10,15 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Filters {
-    private ImInt selectedProfessor = new ImInt();
+    ImInt selectedProfessor = new ImInt();
     private ImString professorFilterInputText = new ImString();
     private ImGuiTextFilter professorFilter = new ImGuiTextFilter();
 
-    private ImInt selectedGroup = new ImInt();
+    ImInt selectedGroup = new ImInt();
     private ImString groupFilterInputText = new ImString();
     private ImGuiTextFilter groupFilter = new ImGuiTextFilter();
 
-    private ImInt selectedDiscipline = new ImInt();
+    ImInt selectedDiscipline = new ImInt();
     private ImString disciplineFilterInputText = new ImString();
     private ImGuiTextFilter disciplineFilter = new ImGuiTextFilter();
 
