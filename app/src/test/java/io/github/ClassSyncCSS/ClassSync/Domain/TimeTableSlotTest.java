@@ -88,4 +88,58 @@ class TimeTableSlotTest {
 
         assertNotEquals(slot1, slot2);
     }
+
+    @Test
+    void testToString() {
+        TimeTableSlot slot = new TimeTableSlot(
+                Weekday.Monday,
+                TimeSlot.EightToTen,
+                createDummyProfessor(),
+                createDummyRoom(),
+                createDummyGroup(),
+                createDummyDiscipline(),
+                ActivityType.Lab
+        );
+
+        String expected = "TimeTableSlot{" +
+                "weekday=" + Weekday.Monday +
+                ", slot=" + TimeSlot.EightToTen +
+                ", professor=" + slot.getProfessor().getName() +
+                ", room=" + slot.getRoom().getName() +
+                ", group=" + slot.getGroup().getName() +
+                ", discipline=" + slot.getDiscipline().getName() +
+                ", activityType=" + ActivityType.Lab +
+                '}';
+
+        assertEquals(expected, slot.toString());
+    }
+
+    @Test
+    void testSetters() {
+        TimeTableSlot slot = new TimeTableSlot(
+                Weekday.Monday,
+                TimeSlot.EightToTen,
+                createDummyProfessor(),
+                createDummyRoom(),
+                createDummyGroup(),
+                createDummyDiscipline(),
+                ActivityType.Lab
+        );
+
+        slot.setWeekday(Weekday.Wednesday);
+        slot.setSlot(TimeSlot.TenToTwelve);
+        slot.setActivityType(ActivityType.Course);
+        slot.setProfessor(new Professor("ProfB", ProfType.Course, new HashMap<>()));
+        slot.setRoom(new Room("C310", List.of(ActivityType.Course)));
+        slot.setGroup(new Group("MISS2", new Year("2", new ArrayList<>()), List.of(new Discipline("OOP", null, null))));
+        slot.setDiscipline(new Discipline("Data Structures", null, null));
+
+        assertEquals(Weekday.Wednesday, slot.getWeekday());
+        assertEquals(TimeSlot.TenToTwelve, slot.getSlot());
+        assertEquals(ActivityType.Course, slot.getActivityType());
+        assertEquals("ProfB", slot.getProfessor().getName());
+        assertEquals("C310", slot.getRoom().getName());
+        assertEquals("MISS2", slot.getGroup().getName());
+        assertEquals("Data Structures", slot.getDiscipline().getName());
+    }
 }
