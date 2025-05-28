@@ -17,6 +17,8 @@ public class FiltersTest {
     private Discipline disc1, disc2;
     private Group group1, group2;
     private Room room1, room2;
+    private Calendar calendar;
+    private SidePane sidePane;
 
     @BeforeEach
     public void setup() {
@@ -36,13 +38,6 @@ public class FiltersTest {
         when(disc2.getName()).thenReturn("Data Structures");
         when(disc2.getCourseProfs()).thenReturn(List.of(prof2));
         when(disc2.getLaboratoryProfs()).thenReturn(List.of());
-
-        // Defensive: ensure all disciplines always return non-null lists
-        when(disc1.getCourseProfs()).thenAnswer(inv -> List.of(prof1));
-        when(disc1.getLaboratoryProfs()).thenAnswer(inv -> List.of(prof2));
-        when(disc2.getCourseProfs()).thenAnswer(inv -> List.of(prof2));
-        when(disc2.getLaboratoryProfs()).thenAnswer(inv -> List.of());
-
 
         // Mock Groups
         group1 = mock(Group.class);
@@ -66,7 +61,13 @@ public class FiltersTest {
         when(allData.getGroups()).thenReturn(List.of(group1, group2));
         when(allData.getRooms()).thenReturn(List.of(room1, room2));
 
+        // UI
+        calendar = mock(Calendar.class);
+        sidePane = mock(SidePane.class);
+
         filters = new Filters(allData);
+        filters.setCalendarRef(calendar);
+        filters.setSidePaneRef(sidePane);
     }
 
     @Test

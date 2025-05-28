@@ -102,13 +102,13 @@ class TimeTableSlotTest {
         );
 
         String expected = "TimeTableSlot{" +
-                "weekday=" + Weekday.Monday +
-                ", slot=" + TimeSlot.EightToTen +
-                ", professor=" + slot.getProfessor().getName() +
-                ", room=" + slot.getRoom().getName() +
-                ", group=" + slot.getGroup().getName() +
-                ", discipline=" + slot.getDiscipline().getName() +
-                ", activityType=" + ActivityType.Lab +
+                "weekday=" + slot.getWeekday() +
+                ", slot=" + slot.getSlot() +
+                ", professor=" + slot.getProfessor() +
+                ", room=" + slot.getRoom() +
+                ", group=" + slot.getGroup() +
+                ", discipline=" + slot.getDiscipline() +
+                ", activityType=" + slot.getActivityType() +
                 '}';
 
         assertEquals(expected, slot.toString());

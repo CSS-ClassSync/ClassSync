@@ -213,12 +213,12 @@ public class AllDataLoadTest {
     public void testToString() {
         AllData data = AllData.load();
         String expectedString = "AllData{" +
-                "years=" + data.getYears() +
-                ", groups=" + data.getGroups() +
-                ", professors=" + data.getProfessors() +
+                "professors=" + data.getProfessors() +
                 ", disciplines=" + data.getDisciplines() +
-                ", rooms=" + data.getRooms() +
                 ", specializations=" + data.getSpecializations() +
+                ", years=" + data.getYears() +
+                ", groups=" + data.getGroups() +
+                ", rooms=" + data.getRooms() +
                 '}';
         assertEquals(expectedString, data.toString());
     }
