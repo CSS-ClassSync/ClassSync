@@ -25,15 +25,17 @@ public class AllDataLoadTest {
 
     @BeforeEach
     public void setup() throws IOException {
+        // Backup original files
         backupDir = tempDir.resolve("backup");
         Files.createDirectory(backupDir);
 
         try (Stream<Path> files = Files.list(originalResourceDir)) {
-            for (Path file : files.toList()) {
+            for (Path file : files.collect(Collectors.toList())) {
                 Files.copy(file, backupDir.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
             }
         }
 
+        // Replace with test files
         resourcesDir = originalResourceDir;
 
         writeCsv("ani.csv", List.of(

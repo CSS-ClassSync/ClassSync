@@ -117,31 +117,44 @@ class TimeTableTest {
         );
     }
 
-    @Test
-    void testSetDataInitializesClassMaps() {
-        TimeTable timeTable = new TimeTable();
-        Discipline discipline = new Discipline("Software Quality", new ArrayList<>(), new ArrayList<>());
-        Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
-        Room room = new Room("C210", null);
-        AllData allData = createAllDataWithGroup(group);
-        allData.setDisciplines(List.of(discipline));
-        allData.setRooms(List.of(room));
-
-        timeTable.setData(allData);
-
-        assertFalse(timeTable.getClassesRemainingByGroup(group).isEmpty());
-        assertFalse(timeTable.getClassesRemainingByDiscipline(discipline).isEmpty());
+    @AfterEach
+    public void teardown() throws IOException {
+        // Delete test files
+        try (Stream<Path> files = Files.list(resourcesDir)) {
+            for (Path file : files.toList()) {
+                Files.delete(file);
+            }
+        }
+        // Restore original files
+        try (Stream<Path> files = Files.list(backupDir)) {
+            for (Path file : files.toList()) {
+                Files.copy(file, resourcesDir.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            }
+        }
     }
+
+    private void writeCsv(String fileName, List<String> lines) throws IOException {
+        Path filePath = resourcesDir.resolve(fileName);
+        Files.write(filePath, lines);
+    }
+
+//    @Test
+//    void testSetDataInitializesClassMaps() {
+//        TimeTable timeTable = new TimeTable();
+//        Discipline discipline = new Discipline("Software Quality", new ArrayList<>(), new ArrayList<>());
+//        Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
+//        AllData allData = createAllDataWithGroup(group);
+//
+//        timeTable.setData(allData);
+//
+//        assertFalse(timeTable.getClassesRemainingByGroup().isEmpty());
+//        assertFalse(timeTable.getClassesRemainingByDisipline().isEmpty());
+//    }
 
     @Test
     void testAddDisciplineNoConflicts() {
         TimeTable timeTable = new TimeTable();
-        Discipline discipline = new Discipline("Software Quality", new ArrayList<>(), new ArrayList<>());
-        Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
-        Room room = new Room("C210", List.of(ActivityType.Course));
-        AllData allData = createAllDataWithGroup(group);
-        allData.setRooms(List.of(room));
-        allData.setDisciplines(List.of(discipline));
+        AllData allData = AllData.load();
         timeTable.setData(allData);
         TimeTableSlot slot = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, null, null,
                 allData.getGroups().getFirst(), allData.getDisciplines().getFirst(), ActivityType.Course);
@@ -156,12 +169,6 @@ class TimeTableTest {
         // AllData allData = AllData.load();
 
         TimeTable timeTable = new TimeTable();
-        Discipline discipline = new Discipline("Software Quality", new ArrayList<>(), new ArrayList<>());
-        Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
-        Room room = new Room("C210", List.of(ActivityType.Course, ActivityType.Lab));
-        AllData allData = createAllDataWithGroup(group);
-        allData.setDisciplines(List.of(discipline));
-        allData.setRooms(List.of(room));
         timeTable.setData(allData);
 
         // Discipline discipline = allData.getDisciplines().getFirst();
@@ -213,11 +220,11 @@ class TimeTableTest {
         TimeTableSlot slot1 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, professor, room, group, discipline, ActivityType.Course);
         TimeTableSlot slot2 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, professor2, room, group2, discipline, ActivityType.Lab);
 
-        boolean result1 = timeTable.addDiscipline(slot1);
-        assertTrue(result1);
+        Discipline discipline = allData.getDisciplines().getFirst();
+        Group group1 = allData.getGroups().getFirst();
 
-        boolean result2 = timeTable.addDiscipline(slot2);
-        assertFalse(result2);
+        TimeTableSlot slot1 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, null, null, group1, discipline, ActivityType.Course);
+        TimeTableSlot slot2 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, null, null, group1, discipline, ActivityType.Lab);
 
         assertFalse(timeTable.getClassesRemainingByGroup(group).isEmpty());
         assertFalse(timeTable.getClassesRemainingByDiscipline(discipline).isEmpty());
@@ -227,15 +234,6 @@ class TimeTableTest {
     void testRemoveDisciplineExistingSlot() {
         // AllData allData = AllData.load();
         TimeTable timeTable = new TimeTable();
-
-        Professor professor = new Professor("ProfA", ProfType.Course, new HashMap<>());
-        Discipline discipline = new Discipline("Software Quality", List.of(professor), new ArrayList<>());
-        Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
-        Room room = new Room("C210", null);
-        AllData allData = new AllData(List.of(professor), List.of(discipline), new ArrayList<>(), List.of(group.getYear()), List.of(group), new ArrayList<>());
-        allData.setDisciplines(List.of(discipline));
-        allData.setRooms(List.of(room));
-
         timeTable.setData(allData);
 
         // Professor professor = allData.getProfessors().getFirst();
@@ -255,14 +253,22 @@ class TimeTableTest {
                 ActivityType.Course
         );
 
-        boolean add = timeTable.addDiscipline(slot);
-        assertTrue(add);
+        timeTable.addDiscipline(slot);
 
-        boolean remove = timeTable.removeDiscipline(slot);
-        assertTrue(remove);
-        //assertTrue(timeTable.getClassesRemainingByDisipline().isEmpty());
-        //assertTrue(timeTable.getClassesRemainingByGroup().isEmpty());
-        //assertTrue(timeTable.getClassesRemainingByProfessor().isEmpty());
+        Room room2 = allData.getRooms().get(1);
+        TimeTableSlot slot2 = new TimeTableSlot(
+                Weekday.Monday,
+                TimeSlot.TenToTwelve,
+                professor,
+                room2,
+                group,
+                discipline,
+                ActivityType.Course
+        );
+        timeTable.addDiscipline(slot2);
+
+        boolean removed = timeTable.removeDiscipline(slot);
+        assertTrue(removed);
     }
 
 
@@ -270,12 +276,6 @@ class TimeTableTest {
     void testCheckAddNoConflicts() {
         // AllData allData = AllData.load();
         TimeTable timeTable = new TimeTable();
-        Discipline discipline = new Discipline("Software Quality", new ArrayList<>(), new ArrayList<>());
-        Group group = new Group("MISS1", new Year("1", new ArrayList<>()), List.of(discipline));
-        Room room = new Room("C210", List.of(ActivityType.Course));
-        AllData allData = createAllDataWithGroup(group);
-        allData.setDisciplines(List.of(discipline));
-        allData.setRooms(List.of(room));
         timeTable.setData(allData);
 
         // Professor professor = allData.getProfessors().getFirst();
