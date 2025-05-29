@@ -10,7 +10,7 @@ import io.github.ClassSyncCSS.ClassSync.Domain.*;
 import java.util.*;
 
 public class Calendar {
-    TimeSlot[] timeIntervals = {
+    final TimeSlot[] timeIntervals = {
             TimeSlot.EightToTen, TimeSlot.TenToTwelve, TimeSlot.TwelveToFourteen, TimeSlot.FourteenToSixteen, TimeSlot.SixteenToEighteen, TimeSlot.EighteenToTwenty,
     };
     TimeTable fullTimeTable;
@@ -18,6 +18,12 @@ public class Calendar {
 
     private SidePane sidePaneRef;
     private Filters filtersRef;
+
+    private boolean classInvariant() {
+        return this.sidePaneRef != null && this.filtersRef != null &&
+                fullTimeTable != null && scheduleData != null && scheduleData.length == timeIntervals.length &&
+                Arrays.stream(scheduleData).allMatch(row -> row.length == Weekday.values().length);
+    }
 
     public Calendar() {
         scheduleData = new TimeTableSlot[timeIntervals.length][Weekday.values().length];
@@ -28,23 +34,28 @@ public class Calendar {
         }
         fullTimeTable = new TimeTable();
 
-        // Initialize the scheduleData with some dummy data
-//        scheduleData[0][0] = new TimeTableSlot(Weekday.Monday, timeIntervals[0], null, null, null, new Discipline(), ActivityType.Course);
-//        scheduleData[0][1] = new TimeTableSlot(Weekday.Monday, timeIntervals[0], null, null, null, new Discipline(), ActivityType.Lab);
+        assert scheduleData != null && scheduleData.length == timeIntervals.length : "Schedule data must be initialized with the correct size.";
+        assert Arrays.stream(scheduleData).allMatch(row -> row.length == Weekday.values().length) : "Each row in schedule data must have the same length as the number of weekdays.";
+        assert fullTimeTable != null : "FullTimeTable must be initialized before use.";
     }
 
     public void setData(AllData data) {
+        assert data != null : "Data must not be null.";
+
         fullTimeTable.setData(data);
     }
 
     public void setSidePaneRef(SidePane pane) {
+        assert pane != null : "SidePane reference must not be null.";
+
         this.sidePaneRef = pane;
     }
 
     public void setFiltersRef(Filters filters) {
+        assert filters != null : "Filters reference must not be null.";
+
         this.filtersRef = filters;
         this.filtersRef.setCalendarRef(this);
-        this.filtersRef.setSidePaneRef(this.sidePaneRef);
     }
 
     public static final String PAYLOAD_TYPE_SCHEDULE_CELL = "SCHEDULE_CELL";
@@ -59,9 +70,13 @@ public class Calendar {
         }
 
         ImGui.end();
+        
+        assert classInvariant() : "Class invariant violated.";
     }
 
     public void updateFilters() {
+        assert classInvariant() : "Class invariant violated before updating filters.";
+
         Professor selectedProf = filtersRef.getSelectedProfessor();
         Group selectedGroup = filtersRef.getSelectedGroup();
         Discipline selectedDiscipline = filtersRef.getSelectedDiscipline();
@@ -135,9 +150,12 @@ public class Calendar {
             }
         }
 
+        assert classInvariant() : "Class invariant violated after updating filters.";
     }
 
     private void displayTable() {
+        assert classInvariant() : "Class invariant violated before displaying the table.";
+
         float height = ImGui.getWindowHeight() * (0.945f / timeIntervals.length);
 
         if (ImGui.beginTable("test", 6, ImGuiTableFlags.Borders)) {
@@ -273,5 +291,7 @@ public class Calendar {
 
             ImGui.endTable();
         }
+
+        assert classInvariant() : "Class invariant violated after displaying the table.";
     }
 }
