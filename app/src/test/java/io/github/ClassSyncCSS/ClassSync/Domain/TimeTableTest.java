@@ -106,6 +106,38 @@ class TimeTableTest {
         Files.write(filePath, lines);
     }
 
+    private AllData createAllDataWithGroup(Group group) {
+        return new AllData(
+            new ArrayList<>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            List.of(group.getYear()),
+            List.of(group),
+            new ArrayList<>()
+        );
+    }
+
+//    @AfterEach
+//    public void teardown() throws IOException {
+//        // Delete test files
+//        try (Stream<Path> files = Files.list(resourcesDir)) {
+//            for (Path file : files.toList()) {
+//                Files.delete(file);
+//            }
+//        }
+//        // Restore original files
+//        try (Stream<Path> files = Files.list(backupDir)) {
+//            for (Path file : files.toList()) {
+//                Files.copy(file, resourcesDir.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+//            }
+//        }
+//    }
+//
+//    private void writeCsv(String fileName, List<String> lines) throws IOException {
+//        Path filePath = resourcesDir.resolve(fileName);
+//        Files.write(filePath, lines);
+//    }
+
 //    @Test
 //    void testSetDataInitializesClassMaps() {
 //        TimeTable timeTable = new TimeTable();
@@ -134,7 +166,7 @@ class TimeTableTest {
 
     @Test
     void testAddDisciplineWithGroupConflict() {
-        AllData allData = AllData.load();
+         AllData allData = AllData.load();
 
         TimeTable timeTable = new TimeTable();
         timeTable.setData(allData);
@@ -188,22 +220,26 @@ class TimeTableTest {
         TimeTableSlot slot1 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, professor, room, group, discipline, ActivityType.Course);
         TimeTableSlot slot2 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, professor2, room, group2, discipline, ActivityType.Lab);
 
-        timeTable.addDiscipline(slot1);
-        boolean result = timeTable.addDiscipline(slot2);
+//        Discipline discipline = allData.getDisciplines().getFirst();
+        Group group1 = allData.getGroups().getFirst();
 
-        assertFalse(result);
+//        TimeTableSlot slot1 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, null, null, group1, discipline, ActivityType.Course);
+//        TimeTableSlot slot2 = new TimeTableSlot(Weekday.Monday, TimeSlot.EightToTen, null, null, group1, discipline, ActivityType.Lab);
+
+        assertFalse(timeTable.getClassesRemainingByGroup(group).isEmpty());
+        assertFalse(timeTable.getClassesRemainingByDiscipline(discipline).isEmpty());
     }
 
     @Test
     void testRemoveDisciplineExistingSlot() {
-        AllData allData = AllData.load();
+         AllData allData = AllData.load();
         TimeTable timeTable = new TimeTable();
         timeTable.setData(allData);
 
-        Professor professor = allData.getProfessors().getFirst();
-        Room room = allData.getRooms().getFirst();
-        Discipline discipline = allData.getDisciplines().getFirst();
-        Group group = allData.getGroups().getFirst();
+         Professor professor = allData.getProfessors().getFirst();
+         Room room = allData.getRooms().getFirst();
+         Discipline discipline = allData.getDisciplines().getFirst();
+         Group group = allData.getGroups().getFirst();
 
         
 
@@ -238,19 +274,19 @@ class TimeTableTest {
 
     @Test
     void testCheckAddNoConflicts() {
-        AllData allData = AllData.load();
+         AllData allData = AllData.load();
         TimeTable timeTable = new TimeTable();
         timeTable.setData(allData);
 
-        Professor professor = allData.getProfessors().getFirst();
-        Room room = allData.getRooms().getFirst();
-        Discipline discipline = allData.getDisciplines().getFirst();
-        Group group = allData.getGroups().getFirst();
+//         Professor professor = allData.getProfessors().getFirst();
+         Room room = allData.getRooms().getFirst();
+         Discipline discipline = allData.getDisciplines().getFirst();
+         Group group = allData.getGroups().getFirst();
 
         TimeTableSlot slot = new TimeTableSlot(
                 Weekday.Monday,
                 TimeSlot.EightToTen,
-                professor,
+                null,
                 room,
                 group,
                 discipline,

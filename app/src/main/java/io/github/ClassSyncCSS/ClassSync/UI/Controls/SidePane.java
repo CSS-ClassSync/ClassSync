@@ -17,24 +17,22 @@ public class SidePane {
     AllData data;
 
     public void setAllData(AllData dat) {
+        assert dat != null : "AllData cannot be null";
+
         this.data = dat;
+    }
+
+    private boolean classInvariant() {
+        return data != null && slots != null;
     }
 
     public SidePane() {
         slots = new ArrayList<>();
-//        var slot = new TimeTableSlot(null, null, null,
-//                                    null, null,
-//                                new Discipline("Test Discipline", null, null),
-//                                ActivityType.Course);
-//        slots.add(slot);
-//        var slot2 = new TimeTableSlot(null, null, null,
-//                                    null, null,
-//                                new Discipline("Test Discipline", null, null),
-//                                ActivityType.Lab);
-//        slots.add(slot2);
     }
 
     public void process() {
+        assert classInvariant() : "Class invariant violated";
+
         ImGui.begin("Classes");
 
         float width = ImGui.getWindowWidth();
@@ -92,5 +90,7 @@ public class SidePane {
         }
 
         ImGui.end();
+
+        assert classInvariant() : "Class invariant violated";
     }
 }

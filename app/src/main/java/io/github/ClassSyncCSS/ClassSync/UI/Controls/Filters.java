@@ -36,22 +36,35 @@ public class Filters {
     private boolean _areFiltersValid = false;
 
     private Calendar calendarRef;
-    private SidePane sidePaneRef;
 
     public Filters(AllData allData) {
+        assert allData != null : "AllData cannot be null";
+
         this.allData = allData;
         this.updateFilters();
     }
 
+    private boolean classInvariant() {
+        return allData != null &&
+               filteredProfessors != null &&
+               filteredGroups != null &&
+               filteredDisciplines != null &&
+               filteredRooms != null &&
+               selectedProfessor != null &&
+               selectedGroup != null &&
+               selectedDiscipline != null &&
+               selectedRoom != null;
+    }
+
     public void setCalendarRef(Calendar calendarRef) {
+        assert calendarRef != null : "Calendar reference cannot be null";
+
         this.calendarRef = calendarRef;
     }
 
-    public void setSidePaneRef(SidePane sidePaneRef) {
-        this.sidePaneRef = sidePaneRef;
-    }
-
     private void updateFilters() {
+        assert classInvariant() : "Class invariant violated in Filters";
+
         // Preserve the current selections
         Professor previouslySelectedProfessor = selectedProfessor.get() > 0 ? filteredProfessors.get(selectedProfessor.get()) : null;
         Discipline previouslySelectedDiscipline = selectedDiscipline.get() > 0 ? filteredDisciplines.get(selectedDiscipline.get()) : null;
@@ -157,27 +170,35 @@ public class Filters {
         } else {
             _areFiltersValid = true;
 
+            assert this.calendarRef != null;
             this.calendarRef.updateFilters();
         }
+
+        assert classInvariant() : "Class invariant violated after updateFilters";
     }
 
     public List<Professor> getFilteredProfessors() {
+        assert classInvariant() : "Class invariant violated in getFilteredProfessors";
         return filteredProfessors;
     }
 
     public List<Group> getFilteredGroups() {
+        assert classInvariant() : "Class invariant violated in getFilteredGroups";
         return filteredGroups;
     }
 
     public List<Discipline> getFilteredDisciplines() {
+        assert classInvariant() : "Class invariant violated in getFilteredDisciplines";
         return filteredDisciplines;
     }
 
     public List<Room> getFilteredRooms() {
+        assert classInvariant() : "Class invariant violated in getFilteredRooms";
         return filteredRooms;
     }
 
     public boolean areFiltersValid() {
+        assert classInvariant() : "Class invariant violated in areFiltersValid";
         return _areFiltersValid;
     }
 
@@ -186,7 +207,9 @@ public class Filters {
      * @return The selected Professor or null if "All" is selected
      */
     public Professor getSelectedProfessor() {
-        if (filteredProfessors == null || filteredProfessors.isEmpty() || selectedProfessor.get() <= 0) {
+        assert classInvariant() : "Class invariant violated in getSelectedProfessor";
+        
+        if (selectedProfessor.get() <= 0) {
             return null; // Return null if "All" is selected (index 0) or no professors available
         }
         return filteredProfessors.get(selectedProfessor.get());
@@ -197,7 +220,9 @@ public class Filters {
      * @return The selected Group or null if "All" is selected
      */
     public Group getSelectedGroup() {
-        if (filteredGroups == null || filteredGroups.isEmpty() || selectedGroup.get() <= 0) {
+        assert classInvariant() : "Class invariant violated in getSelectedGroup";
+
+        if (selectedGroup.get() <= 0) {
             return null; // Return null if "All" is selected (index 0) or no groups available
         }
         return filteredGroups.get(selectedGroup.get());
@@ -208,7 +233,9 @@ public class Filters {
      * @return The selected Discipline or null if "All" is selected
      */
     public Discipline getSelectedDiscipline() {
-        if (filteredDisciplines == null || filteredDisciplines.isEmpty() || selectedDiscipline.get() <= 0) {
+        assert classInvariant() : "Class invariant violated in getSelectedDiscipline";
+        
+        if (selectedDiscipline.get() <= 0) {
             return null; // Return null if "All" is selected (index 0) or no disciplines available
         }
         return filteredDisciplines.get(selectedDiscipline.get());
@@ -219,13 +246,17 @@ public class Filters {
      * @return The selected Room or null if "All" is selected
      */
     public Room getSelectedRoom() {
-        if (filteredRooms == null || filteredRooms.isEmpty() || selectedRoom.get() <= 0) {
+        assert classInvariant() : "Class invariant violated in getSelectedRoom";
+        
+        if (selectedRoom.get() <= 0) {
             return null; // Return null if "All" is selected (index 0) or no rooms available
         }
         return filteredRooms.get(selectedRoom.get());
     }
 
     public void process() {
+        assert classInvariant() : "Class invariant violated in process";
+
         ImGui.begin("Filters");
             float window_width = ImGui.getWindowWidth();
             float one_filter_width = window_width * 0.7f * 0.248f;
@@ -346,5 +377,6 @@ public class Filters {
 
 
         ImGui.end();
+        assert classInvariant() : "Class invariant violated at the end of process";
     }
 }

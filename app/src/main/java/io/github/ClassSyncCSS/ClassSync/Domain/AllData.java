@@ -86,6 +86,49 @@ public class AllData {
         List<List<String>> disciplines_years = loadCsv(path.concat("/materii_an.csv"));
         List<List<String>> disciplines_profs = loadCsv(path.concat("/profesori_materii.csv"));
 
+        // Assert that all CSVs are not empty (except rooms, which may be empty)
+        assert yearsD != null && !yearsD.isEmpty() : "yearsD is empty";
+        assert groupsD != null && !groupsD.isEmpty() : "groupsD is empty";
+        assert profsD != null && !profsD.isEmpty() : "profsD is empty";
+        assert disciplinesD != null && !disciplinesD.isEmpty() : "disciplinesD is empty";
+        assert disciplines_years != null : "disciplines_years is null";
+        assert disciplines_profs != null : "disciplines_profs is null";
+        assert roomsD != null : "roomsD is null";
+
+        // Assert that headers are correct
+        assert yearsD.getFirst().size() >= 3 : "yearsD header has less than 3 columns";
+        assert groupsD.getFirst().size() >= 3 : "groupsD header has less than 3 columns";
+        assert profsD.getFirst().size() >= 2 : "profsD header has less than 2 columns";
+        assert disciplinesD.getFirst().size() >= 3 : "disciplinesD header has less than 3 columns";
+        assert roomsD.isEmpty() || roomsD.getFirst().size() >= 2 : "roomsD header has less than 2 columns";
+
+        // Assert that all referenced years and specializations exist for groups
+        for (List<String> gD : groupsD) {
+            String yearSpecName = gD.getLast();
+            boolean yearExists = yearsD.stream().anyMatch(y -> y.getFirst().equals(yearSpecName));
+            assert yearExists : "Group references missing year: " + yearSpecName;
+        }
+
+        // Assert that all referenced disciplines and years exist for materii_an
+        for (List<String> dy : disciplines_years) {
+            String discId = dy.getFirst();
+            String yearId = dy.getLast();
+            boolean discExists = disciplinesD.stream().anyMatch(d -> d.getFirst().equals(discId));
+            boolean yearExists = yearsD.stream().anyMatch(y -> y.getFirst().equals(yearId));
+            assert discExists : "materii_an references missing discipline: " + discId;
+            assert yearExists : "materii_an references missing year: " + yearId;
+        }
+
+        // Assert that all referenced professors and disciplines exist for profesori_materii
+        for (List<String> pd : disciplines_profs) {
+            String profId = pd.getFirst();
+            String discId = pd.getLast();
+            boolean profExists = profsD.stream().anyMatch(p -> p.getFirst().equals(profId));
+            boolean discExists = disciplinesD.stream().anyMatch(d -> d.getFirst().equals(discId));
+            assert profExists : "profesori_materii references missing professor: " + profId;
+            assert discExists : "profesori_materii references missing discipline: " + discId;
+        }
+
         List<String> discNames = disciplinesD.stream()
                 .map(d -> Arrays.asList("Curs", "Laborator", "Seminar").contains(d.getLast()) ? d.get(1) : null)
                 .filter(Objects::nonNull)
@@ -368,6 +411,68 @@ public class AllData {
             }
             rooms.get(rooms.indexOf(r)).setType(atl);
         };
+
+        // --- Post-condition asserts ---
+
+        // All lists must not be null
+        assert professors != null : "Postcondition failed: professors list is null";
+        assert disciplines != null : "Postcondition failed: disciplines list is null";
+        assert specializations != null : "Postcondition failed: specializations list is null";
+        assert years != null : "Postcondition failed: years list is null";
+        assert groups != null : "Postcondition failed: groups list is null";
+        assert rooms != null : "Postcondition failed: rooms list is null";
+
+        // All professors, disciplines, specializations, years, groups, rooms must have non-null names
+        professors.forEach(p -> {
+            assert p.getName() != null && !p.getName().isEmpty() : "Postcondition failed: professor with null/empty name";
+        });
+        disciplines.forEach(d -> {
+            assert d.getName() != null && !d.getName().isEmpty() : "Postcondition failed: discipline with null/empty name";
+        });
+        specializations.forEach(s -> {
+            assert s.getName() != null && !s.getName().isEmpty() : "Postcondition failed: specialization with null/empty name";
+        });
+        years.forEach(y -> {
+            assert y.getYear() != null && !y.getYear().isEmpty() : "Postcondition failed: year with null/empty value";
+        });
+        groups.forEach(g -> {
+            assert g.getName() != null && !g.getName().isEmpty() : "Postcondition failed: group with null/empty name";
+        });
+        rooms.forEach(r -> {
+            assert r.getName() != null && !r.getName().isEmpty() : "Postcondition failed: room with null/empty name";
+        });
+
+        // All groups must have a year assigned
+        groups.forEach(g -> {
+            assert g.getYear() != null : "Postcondition failed: group without year";
+        });
+
+        // All years must have specializations list (possibly empty, but not null)
+        years.forEach(y -> {
+            assert y.getSpecializations() != null : "Postcondition failed: year with null specializations";
+        });
+
+        // All specializations must have groups and disciplines lists (possibly empty, but not null)
+        specializations.forEach(s -> {
+            assert s.getGroups() != null : "Postcondition failed: specialization with null groups";
+            assert s.getDisciplines() != null : "Postcondition failed: specialization with null disciplines";
+        });
+
+        // All disciplines must have courseProfs and laboratoryProfs lists (possibly empty, but not null)
+        disciplines.forEach(d -> {
+            assert d.getCourseProfs() != null : "Postcondition failed: discipline with null courseProfs";
+            assert d.getLaboratoryProfs() != null : "Postcondition failed: discipline with null laboratoryProfs";
+        });
+
+        // All professors must have disciplines map (possibly empty, but not null)
+        professors.forEach(p -> {
+            assert p.getDisciplines() != null : "Postcondition failed: professor with null disciplines map";
+        });
+
+        // All rooms must have type list (possibly empty, but not null)
+        rooms.forEach(r -> {
+            assert r.getType() != null : "Postcondition failed: room with null type list";
+        });
 
         return new AllData(professors, disciplines, specializations, years, groups, rooms);
     }
