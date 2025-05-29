@@ -38,10 +38,18 @@
       const urlParams = new URLSearchParams(window.location.search);
       const profesorId = urlParams.get('profesor');
 
-      const profesor = profesori.find(p => p.id === profesorId);
-      const profesorName = profesor ? profesor.name : profesorId; 
+      console.assert(profesorId, 'Eroare: Parametrul "profesor" lipseste din URL.');
 
-      document.getElementById('titluOrar').textContent = `Orar pentru profesor ${profesorName}`;
+      const profesor = profesori.find(p => p.id === profesorId);
+      const profesorName = profesor ? profesor.name : profesorId;
+
+      console.assert(profesor || profesorId, `Avertisment: Profesorul cu ID ${profesorId} nu a fost gasit in CSV.`);
+
+      const titlu = `Orar pentru profesor ${profesorName}`;
+      const titluElement = document.getElementById('titluOrar');
+      titluElement.textContent = titlu;
+
+      console.assert(titluElement.textContent === titlu, 'Eroare: Titlul nu a fost actualizat corect.');
 
       const orareProfesori = {
         "PART001": {
@@ -59,21 +67,34 @@
       const zile = ["Luni", "Marti", "Miercuri", "Joi", "Vineri"];
       const intervale = ["08:00–10:00", "10:00–12:00", "12:00–14:00", "14:00–16:00"];
       const orar = orareProfesori[profesorId] || {};
+
+      console.assert(Object.keys(orar).length > 0, `Avertisment: Nu exista orar pentru profesorul ${profesorId}.`);
+
       const body = document.getElementById('orarBody');
 
       intervale.forEach(interval => {
         const tr = document.createElement('tr');
         tr.innerHTML = `<td><strong>${interval}</strong></td>`;
+
         zile.forEach(zi => {
           const slot = orar[zi]?.[interval];
           const td = document.createElement('td');
-          td.innerHTML = slot
-            ? `<strong>${slot.disciplina}</strong><br>${slot.grupa}<br>${slot.sala}`
-            : '';
+
+          if (slot) {
+            td.innerHTML = '<strong>${slot.disciplina}</strong><br>${slot.grupa}<br>${slot.sala>';
+            console.assert(
+              slot.disciplina && slot.grupa && slot.sala,
+              `Eroare: Slot incomplet în ${zi}, ${interval}: ${JSON.stringify(slot)}`
+            );
+          }
+
           tr.appendChild(td);
         });
+
         body.appendChild(tr);
       });
+
+      console.assert(body.children.length === intervale.length, `Eroare: Se asteptau ${intervale.length} randuri, dar s-au generat ${body.children.length}.`);
     }
 
     main();

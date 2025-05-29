@@ -11,6 +11,9 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="js/studenti.js"></script>
   <script>
+    console.assert(document.getElementById('listaGrupe') !== null, 'Eroare: Elementul listaGrupe nu a fost gasit.');
+    console.assert(typeof window.main === 'function', 'Eroare: Functia main() nu este definita.');
+    
     window.main();
   </script>
 </body>

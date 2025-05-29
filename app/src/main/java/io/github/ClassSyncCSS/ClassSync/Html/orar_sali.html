@@ -31,6 +31,11 @@
     const profesor = urlParams.get('profesor');
     const grupa = urlParams.get('grupa');
 
+    console.assert(sala || profesor || grupa, 'Avertisment: Niciun parametru (sala, profesor, grupa) nu a fost furnizat in URL.');
+    if (sala) console.assert(typeof sala === 'string', `Eroare: Parametrul "sala" nu este string valid: ${sala}`);
+    if (profesor) console.assert(typeof profesor === 'string', `Eroare: Parametrul "profesor" nu este string valid: ${profesor}`);
+    if (grupa) console.assert(typeof grupa === 'string', `Eroare: Parametrul "grupa" nu este string valid: ${grupa}`);
+
     const orareSali = {
       "C216": {
         "Luni": {
@@ -48,27 +53,45 @@
                   profesor ? `Orar pentru profesor ${profesor}` :
                   grupa ? `Orar pentru grupa ${grupa}` : "Orar";
 
-    document.getElementById('titluOrar').textContent = titlu;
+    const titluElement = document.getElementById('titluOrar');
+    titluElement.textContent = titlu;
+
+    console.assert(titluElement.textContent === titlu, 'Eroare: Titlul orarului nu s-a setat corect.');
 
     const zile = ["Luni", "Marti", "Miercuri", "Joi", "Vineri"];
     const intervale = ["08:00–10:00", "10:00–12:00", "12:00–14:00", "14:00–16:00"];
 
     const orar = sala ? orareSali[sala] : {}; 
 
+    if (sala) {
+      console.assert(orar, `Eroare: Sala ${sala} nu exista in orareSali.`);
+    }
+
     const body = document.getElementById('orarBody');
+
     intervale.forEach(interval => {
       const tr = document.createElement('tr');
       tr.innerHTML = `<td><strong>${interval}</strong></td>`;
+
       zile.forEach(zi => {
         const slot = orar?.[zi]?.[interval];
         const td = document.createElement('td');
-        td.innerHTML = slot
-          ? `<strong>${slot.disciplina}</strong><br>${slot.profesor}<br>${slot.grupa}`
-          : '';
+
+        if (slot) {
+          td.innerHTML = `<strong>${slot.disciplina}</strong><br>${slot.profesor}<br>${slot.grupa}`;
+          
+          console.assert(slot.disciplina && slot.profesor && slot.grupa,
+            `Eroare: ${zi}, ${interval}: ${JSON.stringify(slot)} este incomplet.`);
+        }
+
         tr.appendChild(td);
       });
+
       body.appendChild(tr);
     });
+
+    console.assert(body.children.length === intervale.length,
+      `Eroare: Se asteptau ${intervale.length} randuri in tabel, dar s-au generat ${body.children.length}.`);
   </script>
 </body>
 </html>

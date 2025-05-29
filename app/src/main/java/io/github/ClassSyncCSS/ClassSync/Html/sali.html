@@ -10,6 +10,8 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="js/sali.js"></script>
   <script>
+    console.assert(document.getElementById('listaSali') !== null, 'Eroare: Elementul listaSali nu a fost gasit.');
+    console.assert(typeof main === 'function', 'Eroare: Functia main() nu este definita.');
     main();
   </script>
 </body>

@@ -29,6 +29,8 @@
     const urlParams = new URLSearchParams(window.location.search);
     const materie = urlParams.get('materie');
 
+    console.assert(materie !== null, 'Eroare: Parametrul "materie" lipseste din URL.');
+
     const orareMaterii = {
       "Advanced Programming": {
         "Luni": {
@@ -46,26 +48,39 @@
     };
 
     const titlu = materie ? `Orar pentru disciplina ${materie}` : "Orar";
-    document.getElementById('titluOrar').textContent = titlu;
+    const titluElement = document.getElementById('titluOrar');
+    titluElement.textContent = titlu;
+
+    console.assert(titluElement.textContent.includes(materie || ''), 'Eroare: Titlul nu contine numele disciplinei.');
 
     const zile = ["Luni", "Marti", "Miercuri", "Joi", "Vineri"];
     const intervale = ["08:00–10:00", "10:00–12:00", "12:00–14:00", "14:00–16:00"];
 
-    const orar = materie ? orareMaterii[materie] : {}; 
+    const orar = materie ? orareMaterii[materie] : {};
     const body = document.getElementById('orarBody');
+
     intervale.forEach(interval => {
       const tr = document.createElement('tr');
       tr.innerHTML = `<td><strong>${interval}</strong></td>`;
+
       zile.forEach(zi => {
         const slot = orar?.[zi]?.[interval];
         const td = document.createElement('td');
         td.innerHTML = slot
           ? `<strong>Sala: ${slot.sala}</strong><br>Profesor: ${slot.profesor}<br>Grupa: ${slot.grupa}`
           : '';
+        
+        if (slot) {
+          console.assert(slot.sala && slot.profesor && slot.grupa, `Eroare: Slotul pentru ${zi}, ${interval} este incomplet.`);
+        }
+
         tr.appendChild(td);
       });
+
       body.appendChild(tr);
     });
+
+    console.assert(body.children.length === intervale.length, `Eroare: Se asteptau ${intervale.length} randuri, dar s-au gasit ${body.children.length}.`);
   </script>
 </body>
 </html>

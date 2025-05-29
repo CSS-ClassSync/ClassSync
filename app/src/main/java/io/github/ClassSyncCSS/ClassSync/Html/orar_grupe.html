@@ -28,7 +28,14 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const grupa = urlParams.get('grupa');
-    document.getElementById('titluOrar').textContent = `Orar pentru grupa ${grupa}`;
+
+    console.assert(grupa, 'Eroare: Parametrul "grupa" lipseste din URL.');
+
+    const titlu = `Orar pentru grupa ${grupa}`;
+    const titluElement = document.getElementById('titluOrar');
+    titluElement.textContent = titlu;
+
+    console.assert(titluElement.textContent === titlu, 'Eroare: Titlul afisat nu corespunde grupei.');
 
     const orare = {
       "MIAO1": {
@@ -44,6 +51,10 @@
       }
     };
 
+    if (grupa) {
+      console.assert(orare.hasOwnProperty(grupa), `Eroare: Nu exista orar definit pentru grupa ${grupa}.`);
+    }
+
     const zile = ["Luni", "Marti", "Miercuri", "Joi", "Vineri"];
     const intervale = ["08:00–10:00", "10:00–12:00", "12:00–14:00", "14:00–16:00"];
     const orar = orare[grupa] || {};
@@ -52,16 +63,25 @@
     intervale.forEach(interval => {
       const tr = document.createElement('tr');
       tr.innerHTML = `<td><strong>${interval}</strong></td>`;
+
       zile.forEach(zi => {
         const slot = orar[zi]?.[interval];
         const td = document.createElement('td');
-        td.innerHTML = slot
-          ? `<strong>${slot.disciplina}</strong><br>${slot.profesor}<br>${slot.sala}`
-          : '';
+
+        if (slot) {
+          td.innerHTML = `<strong>${slot.disciplina}</strong><br>${slot.profesor}<br>${slot.sala}`;
+          console.assert(slot.disciplina && slot.profesor && slot.sala, `Eroare: ${zi}, ${interval} este incomplet.`);
+        } else {
+          td.innerHTML = '';
+        }
+
         tr.appendChild(td);
       });
+
       body.appendChild(tr);
     });
+
+    console.assert(body.children.length === intervale.length, `Eroare: Se asteptau ${intervale.length} randuri, dar s-au gasit ${body.children.length}.`);
   </script>
 </body>
 </html>

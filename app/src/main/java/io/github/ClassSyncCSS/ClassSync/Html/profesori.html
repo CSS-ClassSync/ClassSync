@@ -21,26 +21,46 @@
       const materii = await loadCSV('data/materii.csv');
       const lista = document.getElementById('listaProfesori');
 
+      console.assert(profesori.length > 0, 'Eroare: Lista profesorilor este goala sau fisierul profesori.csv nu a fost incarcat corect.');
+      console.assert(profesoriMaterii.length > 0, 'Eroare: Lista profesori_materii este goala sau fisierul profesori_materii.csv nu a fost incarcat corect.');
+      console.assert(materii.length > 0, 'Eroare: Lista materiilor este goala sau fisierul materii.csv nu a fost incarcat corect.');
+
       profesori.forEach(prof => {
+        console.assert(prof.id && prof.name && prof.rol, `Eroare: Date incomplete pentru profesor: ${JSON.stringify(prof)}`);
+
         const materiiIds = profesoriMaterii
           .filter(pm => pm.profesor === prof.id)
           .map(pm => pm.materie);
 
+        console.assert(Array.isArray(materiiIds), `Eroare: Lista materiilor pentru profesorul ${prof.name} nu este valida.`);
+
         const nameMaterii = materiiIds
-          .map(id => materii.find(mat => mat.id === id))
-          .filter(m => m !== undefined)  
+          .map(id => {
+            const materie = materii.find(mat => mat.id === id);
+            if (!materie) {
+              console.warn(`Avertisment: Materia cu id ${id} nu a fost gasita pentru profesorul ${prof.name}.`);
+              return undefined;
+            }
+            return materie;
+          })
+          .filter(m => m !== undefined)
           .map(m => `${m.name} (${m.tip})`);
 
-        if (nameMaterii.length === 0) return; 
+        if (nameMaterii.length === 0) return;
 
         const li = document.createElement('li');
         const link = document.createElement('a');
         link.href = `orar_profesori.html?profesor=${encodeURIComponent(prof.id)}`;
         link.textContent = `${prof.name} (${prof.rol})`;
         li.appendChild(link);
+
+        console.assert(link.href.includes(encodeURIComponent(prof.id)), `Eroare: Link invalid pentru profesorul ${prof.name}`);
+
         li.innerHTML += `<br>Materii: ${nameMaterii.join(', ')}`;
         lista.appendChild(li);
       });
+
+      console.assert(lista.children.length > 0, 'Avertisment: Niciun profesor nu a fost afisat in lista.');
     }
 
     main();
